@@ -10,9 +10,9 @@ require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
 
 $lists_of_cat = sql_get_categories($con);
+$lots_view = sql_get_lots_view($con);
 
-
-$page_content = include_template ('main.php', ['lists_of_cat' => $lists_of_cat]);
+$page_content = include_template ('main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view]);
 $layout_content = include_template ('layout.php',['main_content' => $page_content, 'title' => 'Yeticave: главная', 'lists_of_cat' => $lists_of_cat]);
 print ($layout_content);
 
