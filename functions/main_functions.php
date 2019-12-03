@@ -37,6 +37,14 @@ function get_lost_time ($time) {
     }
 };
 
+function get_rates_amount ($rates) {
+    if ($rates == 1) {
+       return $rates . ' ставка';
+    } else {
+       return $rates . ' ставки';
+    };
+}
+
 
 function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
