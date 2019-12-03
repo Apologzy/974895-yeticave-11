@@ -20,6 +20,24 @@ function get_post_time ($time) {
 };
 
 
+function get_lost_time ($time) {
+    $month_con = date_interval_format($time, '%m');
+    $day_con = date_interval_format($time, '%a');
+    $hours_con = date_interval_format($time, '%h');
+    $min_con = date_interval_format($time, '%i');
+    if ($month_con >= 1) {
+        $dt_result = $month_con . 'м ' . $day_con . 'д ' . $hours_con . ':' . $min_con;
+        return $dt_result;
+    } else if ($day_con > 0) {
+        $dt_result = $day_con . 'д ' . $hours_con . ':' . $min_con;
+        return $dt_result;
+    } else if ($hours_con >= 1) {
+        $dt_result = $hours_con . ':' . $min_con;
+        return $dt_result;
+    }
+};
+
+
 function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
     $number = (int)$number;

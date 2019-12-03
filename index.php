@@ -1,5 +1,8 @@
 <?php
 $user_name = 'Кирилл'; // укажите здесь ваше имя
+date_default_timezone_get("Europe/Moskow");
+$dt_now = date_create('now');
+$dt_future = date_create('2019-12-7');
 
 $con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
 if ($con == false) {
@@ -8,6 +11,9 @@ if ($con == false) {
 
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
+
+$dt_diff = date_diff($dt_now, $dt_future);
+$dt_lost = get_lost_time($dt_diff);
 
 $lists_of_cat = sql_get_categories($con);
 $lots_view = sql_get_lots_view($con);
