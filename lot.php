@@ -29,12 +29,13 @@ foreach ($lots_view as $lot) {
     $lots_and_rates = sql_get_rates($con, $lot['id']);
     $rates_amount = count($lots_and_rates);
     $rates_result = get_rates_amount($rates_amount);
+    $current_price = sql_get_current_price($con, $lot['id']);
 };
 
 
 $page_content = include_template ('lot_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
     'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result,
-    'rate_history' => $rate_history]);
+    'rate_history' => $rate_history, 'current_price' => $current_price]);
 
 $layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
     'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);

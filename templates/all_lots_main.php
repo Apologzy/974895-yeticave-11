@@ -24,7 +24,10 @@
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount"><?=$rates_amount ? $rates_result : 'Текущая цена'  ?></span>
-                            <span class="lot__cost"><?=$lot['start_price']; ?><b class="rub">р</b></span>
+                             <?php var_dump($curr_pr_arr); ?>
+                            <?php foreach ($curr_pr_arr as $price) : ?>
+                            <span class="lot__cost"><?= $price['rate_price'] ? $price['rate_price'] : $lot['start_price'] ?><b class="rub">р</b></span>
+                            <?php endforeach; ?>
                         </div>
                         <div class="lot__timer timer">
                             <?=$lot['dt_end']; ?>

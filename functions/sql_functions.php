@@ -85,6 +85,27 @@ SQL;
     }
 };
 
+function sql_get_current_price ($connect, $get_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
+    $rate = <<<SQL
+    SELECT  u.id, u.login, r.user_id, r.lot_id, r.dt_create, r.rate_price FROM users u
+    JOIN  rates r ON u.id = r.user_id
+    $whereCondition
+    ORDER BY r.rate_price DESC LIMIT 1
+SQL;
+    $sql_rate_result = mysqli_query($connect, $rate);
+    if(!$sql_rate_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_all($sql_rate_result, MYSQLI_ASSOC);
+    }
+};
+
+
+
 function sql_get_lots_rate($connect) {
     mysqli_set_charset($connect, 'utf8');
     $lots = <<<SQL
@@ -101,6 +122,7 @@ SQL;
         return mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
     }
 };
+
 
 function sql_get_rates($connect, $id) {
     mysqli_set_charset($connect, 'utf8');
@@ -120,6 +142,24 @@ SQL;
     }
 };
 
+function sql_get_rate_price_all_lots($connect, $get_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
+    $lots = <<<SQL
+    SELECT l.id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.user_id, r.lot_id, r.rate_price  FROM lots l 
+    JOIN rates r ON l.id = r.lot_id
+    $whereCondition
+    ORDER BY r.rate_price DESC LIMIT 1
+SQL;
+    $sql_lots_result = mysqli_query($connect, $lots);
+    if(!$sql_lots_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_assoc($sql_lots_result);
+    }
+};
 
 
 ?>

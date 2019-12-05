@@ -27,7 +27,9 @@
                 <div class="lot-item__cost-state">
                     <div class="lot-item__rate">
                         <span class="lot-item__amount"><?=$rates_amount ? $rates_result : 'Текущая цена'  ?></span>
-                        <span class="lot-item__cost"><?= $lot['start_price'] ?></span>
+                        <?php foreach ($current_price as $price) : ?>
+                        <span class="lot-item__cost"><?= $price['rate_price'] ? $price['rate_price'] : $lot['start_price'] ?></span>
+                        <?php endforeach; ?>
                     </div>
                     <div class="lot-item__min-cost">
                         Мин. ставка <span>12 000 р</span>
