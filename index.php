@@ -12,11 +12,15 @@ if ($con == false) {
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
 
+$content_id = $_GET['content_id'] ?? null;
+
 $dt_diff = date_diff($dt_now, $dt_future);
 $dt_lost = get_lost_time($dt_diff);
 
 $lists_of_cat = sql_get_categories($con);
-$lots_view = sql_get_lots_view($con);
+$lots_view = sql_get_lots_view($con, $content_id);
+
+
 
 $page_content = include_template ('main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view]);
 $layout_content = include_template ('layout.php',['main_content' => $page_content, 'title' => 'Yeticave: главная', 'lists_of_cat' => $lists_of_cat]);

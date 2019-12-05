@@ -44,8 +44,8 @@
     <nav class="nav">
         <ul class="nav__list container">
             <?php foreach ($lists_of_cat as $category): ?>
-                <li class="nav__item nav__item--current">
-                    <a href="pages/all-lots.html"><?= $category['cat_name']; ?></a>
+                <li class="nav__item <?= $content_id == $category['id'] ? $active_cat : '' ?>">
+                    <a href="/all_lots.php?content_id=<?= $category['id']; ?>"><?= $category['cat_name']; ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>

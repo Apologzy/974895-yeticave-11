@@ -1,5 +1,4 @@
 <?php
-$user_name = 'Кирилл'; // укажите здесь ваше имя
 date_default_timezone_get("Europe/Moskow");
 $dt_now = date_create('now');
 $dt_future = date_create('2019-12-7');
@@ -16,24 +15,29 @@ require ('functions/sql_functions.php');
 
 
 $content_id = $_GET['content_id'] ?? null;
+$lot_id = $_GET['lot_id'] ?? null;
 
 $dt_diff = date_diff($dt_now, $dt_future);
 $dt_lost = get_lost_time($dt_diff);
 
 $lists_of_cat = sql_get_categories($con);
-$lots_view = sql_get_lots_view($con, $content_id);
+$lots_view = sql_get_lot($con, $lot_id);
+
 
 foreach ($lots_view as $lot) {
+    $rate_history = sql_get_rates_history($con, $lot['id']);
     $lots_and_rates = sql_get_rates($con, $lot['id']);
     $rates_amount = count($lots_and_rates);
     $rates_result = get_rates_amount($rates_amount);
 };
 
-$page_content = include_template ('all_lots_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
-'content_id' => $content_id, 'active_cat' => $active_cat, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result ]);
 
-$layout_content = include_template ('all_lots_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
-'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
+$page_content = include_template ('lot_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
+    'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result,
+    'rate_history' => $rate_history]);
+
+$layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
+    'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
 
 print ($layout_content);
 

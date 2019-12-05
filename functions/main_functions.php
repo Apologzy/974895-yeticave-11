@@ -43,7 +43,7 @@ function get_rates_amount ($rates) {
     } else {
        return $rates . ' ставки';
     };
-}
+};
 
 
 function get_noun_plural_form(int $number, string $one, string $two, string $many): string
