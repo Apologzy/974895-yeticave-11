@@ -37,10 +37,10 @@
         </ul>
     </section>
     <ul class="pagination-list">
-        <li class="pagination-item pagination-item-prev"><a>Назад</a></li>
+        <li class="pagination-item pagination-item-prev"><a href="/all_lots.php?content_id=<?= $content_id; ?>&pages=<?= $back_slide > 1 ? $back_slide : 1; ?>">Назад</a></li>
         <?php for($i = 1; $i <= $total_pages; $i++) : ?>
         <li class="pagination-item"><a href="/all_lots.php?content_id=<?= $content_id; ?>&pages=<?= $i; ?>"><?=$i; ?></a></li>
         <?php endfor; ?>
-        <li class="pagination-item pagination-item-next"><a href="#">Вперед</a></li>
+        <li class="pagination-item pagination-item-next"><a href="/all_lots.php?content_id=<?= $content_id; ?>&pages=<?= $forward_slide <= $total_pages ? $forward_slide : $page_number; ?>">Вперед</a></li>
     </ul>
 </div>

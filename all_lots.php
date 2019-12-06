@@ -17,7 +17,8 @@ require ('functions/sql_functions.php');
 
 $content_id = $_GET['content_id'] ?? null;
 $page_number = $_GET['pages'] ?? 1;
-
+$forward_slide = $page_number + 1;
+$back_slide = $page_number - 1;
 $dt_diff = date_diff($dt_now, $dt_future);
 $dt_lost = get_lost_time($dt_diff);
 
@@ -26,6 +27,7 @@ $total_lots = sql_get_total_count_lots($con, $content_id);
 $total_pages = get_total_pages($total_lots);
 $offset_and_limits = get_offset_and_limits(9,$total_pages);
 $lots_view = sql_get_lots_for_curr_pages($con, $content_id, $page_number, $offset_and_limits);
+
 
 foreach ($lots_view as &$lot) {
     $lots_and_rates = sql_get_rates($con, $lot['id']);
@@ -39,7 +41,7 @@ foreach ($lots_view as &$lot) {
 
 $page_content = include_template ('all_lots_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
 'content_id' => $content_id, 'active_cat' => $active_cat, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result,
-'total_pages' => $total_pages]);
+'total_pages' => $total_pages, 'forward_slide' => $forward_slide, 'back_slide' => $back_slide, 'page_number' => $page_number]);
 
 $layout_content = include_template ('all_lots_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
 'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
