@@ -24,10 +24,8 @@
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount"><?=$rates_amount ? $rates_result : 'Текущая цена'  ?></span>
-                             <?php var_dump($curr_pr_arr); ?>
-                            <?php foreach ($curr_pr_arr as $price) : ?>
-                            <span class="lot__cost"><?= $price['rate_price'] ? $price['rate_price'] : $lot['start_price'] ?><b class="rub">р</b></span>
-                            <?php endforeach; ?>
+                            <span class="lot__cost"><?= $lot['price']['rate_price'] ? $lot['price']['rate_price'] : $lot['start_price'] ?><b class="rub">р</b></span>
+
                         </div>
                         <div class="lot__timer timer">
                             <?=$lot['dt_end']; ?>
@@ -40,10 +38,9 @@
     </section>
     <ul class="pagination-list">
         <li class="pagination-item pagination-item-prev"><a>Назад</a></li>
-        <li class="pagination-item pagination-item-active"><a>1</a></li>
-        <li class="pagination-item"><a href="#">2</a></li>
-        <li class="pagination-item"><a href="#">3</a></li>
-        <li class="pagination-item"><a href="#">4</a></li>
+        <?php for($i = 1; $i <= $total_pages; $i++) : ?>
+        <li class="pagination-item"><a href="/all_lots.php?content_id=<?= $content_id; ?>&pages=<?= $i; ?>"><?=$i; ?></a></li>
+        <?php endfor; ?>
         <li class="pagination-item pagination-item-next"><a href="#">Вперед</a></li>
     </ul>
 </div>

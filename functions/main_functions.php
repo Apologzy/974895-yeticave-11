@@ -45,6 +45,26 @@ function get_rates_amount ($rates) {
     };
 };
 
+function get_total_pages($lots) {
+    $lots_count = count($lots);
+    if($lots_count == 0) {
+        return 1;
+    } else {
+        return ceil($lots_count/9);
+    }
+};
+
+function get_offset_and_limits ($page_size, $total_pages) {
+   $limit = $page_size;
+   $offset = 0;
+   $offset_and_limits = [];
+   for ($i = 1; $i <= $total_pages; $i++) {
+       $offset_and_limits[$i] = ['page' => $i, 'offset'=> $offset, 'limit'=> $limit];
+       $offset += 9;
+   };
+   return $offset_and_limits;
+};
+
 
 function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
