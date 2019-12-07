@@ -198,6 +198,20 @@ function validateLength($value, $min, $max) {
     return null;
 };
 
+//валидация даты
+function validate_date($value, $min, $max) {
+    if ($value) {
+        $len = strlen($value);
+        if ($len < $min or $len > $max) {
+            return "Значение должно быть от $min до $max символов";
+        } elseif(!strtotime($value)) {
+            return "Указан неверный формат даты";
+        }
+    }
+
+    return null;
+};
+
 //возвращает введенное пользователем значение в форму
 function getPostVal($name) {
     return filter_input(INPUT_POST, $name);

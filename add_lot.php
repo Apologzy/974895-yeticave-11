@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             return validateLength($value, 1, 200);
         },
         'lot-date' => function($value) {
-            return validateLength($value, 10, 10);
+            return validate_date($value, 10, 10);
         },
         'description' => function($value) {
             return validateLength($value, 10, 3000);
