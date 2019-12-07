@@ -35,7 +35,7 @@
     </header>
 
     <main>
-       <?= $main_content ?>
+        <?= $main_content ?>
     </main>
 
 </div>
@@ -91,6 +91,5 @@
         </div>
     </div>
 </footer>
-
 </body>
 </html>
