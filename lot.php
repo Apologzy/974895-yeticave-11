@@ -45,6 +45,49 @@ foreach ($lots_view as &$lot) {
     $lot['min_price'] = $min_price;
 };
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $form = $_POST;
+    $req_fields = ['rate'];
+    $rules = [
+        'rate' => function($value, $con, $lot_id) {
+            return validate_rate($value, $con, $lot_id);
+        }
+    ];
+
+    $form_con_arr = filter_input_array(INPUT_POST, ['rate' => FILTER_DEFAULT], true);
+
+    foreach ($form_con_arr as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $errors[$key] = $rule($value, $con, $lot_id);
+        }
+
+        if (in_array($key, $req_fields) && empty($value)) {
+            $errors[$key] = "Поле $key надо заполнить";
+        }
+    };
+    $errors = array_filter($errors);
+
+    if (count($errors)) {
+        $page_content = include_template ('lot_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
+        'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result,
+        'errors' => $errors]);
+        $layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
+        'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
+        exit($layout_content);
+
+    } else {
+        $sql = 'INSERT INTO rates (dt_create, user_id, lot_id, rate_price) VALUES (NOW(),?,?,?)';
+        $stmt = db_get_prepare_stmt($con, $sql, [$_SESSION['user']['id'], $lot_id, $form['rate']]);
+        $res = mysqli_stmt_execute($stmt);
+
+    };
+    if ($res && empty($errors)) {
+        header("Location: lot.php?lot_id=" . $lot_id);
+        exit();
+    };
+};
+
 
 $page_content = include_template ('lot_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
     'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result]);

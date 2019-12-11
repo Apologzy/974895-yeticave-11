@@ -32,13 +32,13 @@
 
                     </div>
                     <div class="lot-item__min-cost">
-                        Мин. ставка <span><?=$lot['min_price'] ?></span>
+                        Мин. ставка <span><?=$lot['min_price']; ?></span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
+                <form class="lot-item__form"  method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item form__item--invalid">
                         <label for="cost">Ваша ставка</label>
-                        <input id="cost" type="text" name="cost" placeholder="<?= $lot['price']['rate_price'] ? $lot['price']['rate_price'] : $lot['start_price'] ?>">
+                        <input id="cost" type="text" name="rate" placeholder="<?=$lot['min_price']; ?>">
                         <span class="form__error">Введите наименование лота</span>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>

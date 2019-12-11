@@ -254,6 +254,39 @@ function calc_min_rate ($price, $step_rate) {
     return $price + $step_rate;
 };
 
+function validate_rate ($value, $connect, $get_id) {
+    if (strlen($value) > 0) {
+        mysqli_set_charset($connect, 'utf8');
+        $whereCondition = ($get_id ?  "WHERE l.id = $get_id" : '');
+        $lots = <<<SQL
+    SELECT l.id, c.id AS cat_id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, c.cat_name, c.symb_code FROM lots l 
+    JOIN categories c ON c.id = l.cat_id
+    $whereCondition
+SQL;
+        $sql_lots_result = mysqli_query($connect, $lots);
+        if(!$sql_lots_result) {
+            $error = mysqli_error($connect);
+            exit('Ошибка mySQL: ' . $error);
+        }
+        else {
+            $lots_arr = mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
+            foreach ($lots_arr as &$lot) {
+                $current_price = sql_get_current_price($connect, $lot['id']);
+                $lot['price'] = $current_price;
+                $cur_price = (isset($lot['price']['rate_price']) ? $lot['price']['rate_price'] : $lot['start_price']);
+                $min_price = calc_min_rate($cur_price, $lot['step_rate']);
+                $lot['min_price'] = $min_price;
+                if ($lot['min_price'] > $value) {
+                    return 'Ставка слишком мала';
+                } else {
+                    return null;
+                }
+            };
+        };
+    }
+    return null;
+};
+
 function show_error(&$content, $error) {
     $content = include_template('error.php', ['error' => $error]);
 };
