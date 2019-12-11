@@ -1,7 +1,8 @@
 <?php
+session_start();
 date_default_timezone_get("Europe/Moskow");
 $dt_now = date_create('now');
-$dt_future = date_create('2019-12-7');
+
 $active_cat = 'nav__item--current';
 
 $con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
@@ -17,25 +18,36 @@ require ('functions/sql_functions.php');
 $content_id = $_GET['content_id'] ?? null;
 $lot_id = $_GET['lot_id'] ?? null;
 
-$dt_diff = date_diff($dt_now, $dt_future);
-$dt_lost = get_lost_time($dt_diff);
-
 $lists_of_cat = sql_get_categories($con);
 $lots_view = sql_get_lot($con, $lot_id);
 
 
-foreach ($lots_view as $lot) {
+foreach ($lots_view as &$lot) {
     $rate_history = sql_get_rates_history($con, $lot['id']);
+    $lot['history'] = $rate_history;
+    $dt_future = (isset($lot['dt_end']) ? date_create($lot['dt_end']) : null );
+    $lost_time_trade = get_lost_time($dt_now, $dt_future);
+    $lot['lost_time'] = $lost_time_trade;
+    $time_finisher = timer_finisher($dt_now, $dt_future);
+    $lot['timer'] = $time_finisher;
+    foreach ($lot['history'] as &$history) {
+        $dt_cr_rate = ($history['dt_create'] ? date_create($history['dt_create']) : null);
+        $time_ago = get_history_time_ago($dt_now, $dt_cr_rate);
+        $history['time'] = $time_ago;
+    };
     $lots_and_rates = sql_get_rates($con, $lot['id']);
     $rates_amount = count($lots_and_rates);
     $rates_result = get_rates_amount($rates_amount);
     $current_price = sql_get_current_price($con, $lot['id']);
+    $lot['price'] = $current_price;
+    $cur_price = (isset($lot['price']['rate_price']) ? $lot['price']['rate_price'] : $lot['start_price']);
+    $min_price = calc_min_rate($cur_price, $lot['step_rate']);
+    $lot['min_price'] = $min_price;
 };
 
 
 $page_content = include_template ('lot_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
-    'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result,
-    'rate_history' => $rate_history, 'current_price' => $current_price]);
+    'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result]);
 
 $layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
     'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);

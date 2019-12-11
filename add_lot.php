@@ -1,7 +1,7 @@
 <?php
+session_start();
 date_default_timezone_get("Europe/Moskow");
 $dt_now = date_create('now');
-$dt_future = date_create('2019-12-7');
 $active_cat = 'nav__item--current';
 
 $con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
@@ -13,8 +13,6 @@ require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
 
 $content_id = $_GET['content_id'] ?? null;
-$dt_diff = date_diff($dt_now, $dt_future);
-$dt_lost = get_lost_time($dt_diff);
 
 $lists_of_cat = sql_get_categories($con);
 
@@ -88,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     };
 
     if (count($errors)) {
-        var_dump($errors);
         $page_content = include_template('add_lot_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con, 'content_id' => $content_id, 'active_cat' => $active_cat,
         'errors' => $errors, 'form_con_arr' => $form_con_arr]);
         $layout_content = include_template ('add_lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Добавить лот',
@@ -103,9 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $lot_date = $form_con_arr['lot-date'];
             $lot_description = $form_con_arr['description'];
             $lot_cat_id = $form_con_arr['category'];
+            $user_id = $_SESSION['user']['id'];
             $sql_add_lot = <<<SQL
             INSERT INTO lots
-            set user_create_id = 1,
+            set user_create_id = $user_id,
             cat_id = '$lot_cat_id',
             title = '$lot_name',
             img = '$lot_img',

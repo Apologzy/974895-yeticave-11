@@ -27,8 +27,8 @@
                             <span class="lot__cost"><?= $lot['price']['rate_price'] ? $lot['price']['rate_price'] : $lot['start_price'] ?><b class="rub">р</b></span>
 
                         </div>
-                        <div class="lot__timer timer">
-                            <?=$lot['dt_end']; ?>
+                        <div class="lot__timer timer <?= $lot['timer']; ?>">
+                            <?= $lot['lost_time']; ?>
                         </div>
                     </div>
                 </div>

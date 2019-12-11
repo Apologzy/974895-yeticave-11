@@ -1,7 +1,6 @@
 <?php
 session_start();
 $dt_now = date_create('now');
-$dt_future = date_create('2019-12-7');
 $active_cat = 'nav__item--current';
 $con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
 if ($con == false) {
@@ -33,7 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
 
     if (!count($errors) and $user) {
-        if (password_verify($form['password'], $user['password'])) {
+        if (password_verify($form['password'], $user['pass'])) {
+
+
             $_SESSION['user'] = $user;
         }
         else {
@@ -69,5 +70,3 @@ $layout_content = include_template ('login_layout.php',['main_content' => $page_
     'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
 
 print ($layout_content);
-
-?>

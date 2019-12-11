@@ -1,6 +1,49 @@
 <?php
 
-function get_post_time ($time) {
+
+function get_lost_time ($time_now, $date_end) {
+    $time = date_diff($time_now, $date_end);
+    $month_con = date_interval_format($time, '%m');
+    $day_con = date_interval_format($time, '%a');
+    $hours_con = date_interval_format($time, '%h');
+    $min_con = date_interval_format($time, '%i');
+    if ($month_con >= 1) {
+        return get_noun_plural_form($month_con, 'месяц', 'месяца', 'месяцев');
+    } else if ($day_con >= 7) {
+        $week_con = floor($day_con / 7);
+        return get_noun_plural_form($week_con, 'неделя', 'недели', 'недель');
+    } else if ($day_con > 0 and $day_con < 7 ) {
+        return get_noun_plural_form($day_con, 'день', 'дня', 'дней');
+    } else if ($hours_con >= 1) {
+        return get_noun_plural_form($hours_con, 'час', 'часа', 'часов');
+    } else {
+        return get_noun_plural_form($min_con, 'минута', 'минуты', 'минут');
+    }
+};
+
+function timer_finisher ($time_now, $date_end) {
+    $time = date_diff($time_now, $date_end);
+    $month_con = date_interval_format($time, '%m');
+    $day_con = date_interval_format($time, '%a');
+    $hours_con = date_interval_format($time, '%h');
+    $min_con = date_interval_format($time, '%i');
+    if ($month_con >= 1) {
+        return '';
+    } else if ($day_con >= 7) {
+        $week_con = floor($day_con / 7);
+        return '';
+    } else if ($day_con > 0 and $day_con < 7 ) {
+        return '';
+    } else if ($hours_con >= 1) {
+        return '';
+    } else {
+        return 'timer--finishing';
+    }
+};
+
+
+function get_history_time_ago ($time_now, $rate_tame) {
+    $time = date_diff($time_now, $rate_tame);
     $month_con = date_interval_format($time, '%m');
     $day_con = date_interval_format($time, '%a');
     $hours_con = date_interval_format($time, '%h');
@@ -10,7 +53,7 @@ function get_post_time ($time) {
     } else if ($day_con >= 7) {
         $week_con = floor($day_con / 7);
         return get_noun_plural_form($week_con, 'неделя', 'недели', 'недель') . ' назад';
-    } else if ($day_con < 0 and $day_con < 7 ) {
+    } else if ($day_con > 0 and $day_con < 7 ) {
         return get_noun_plural_form($day_con, 'день', 'дня', 'дней') . ' назад';
     } else if ($hours_con >= 1) {
         return get_noun_plural_form($hours_con, 'час', 'часа', 'часов'). ' назад';
@@ -19,23 +62,6 @@ function get_post_time ($time) {
     }
 };
 
-
-function get_lost_time ($time) {
-    $month_con = date_interval_format($time, '%m');
-    $day_con = date_interval_format($time, '%a');
-    $hours_con = date_interval_format($time, '%h');
-    $min_con = date_interval_format($time, '%i');
-    if ($month_con >= 1) {
-        $dt_result = $month_con . 'м ' . $day_con . 'д ' . $hours_con . ':' . $min_con;
-        return $dt_result;
-    } else if ($day_con > 0) {
-        $dt_result = $day_con . 'д ' . $hours_con . ':' . $min_con;
-        return $dt_result;
-    } else if ($hours_con >= 1) {
-        $dt_result = $hours_con . ':' . $min_con;
-        return $dt_result;
-    }
-};
 
 function get_rates_amount ($rates) {
     if ($rates == 1) {
@@ -224,10 +250,10 @@ function getPostVal($name) {
     return filter_input(INPUT_POST, $name);
 };
 
+function calc_min_rate ($price, $step_rate) {
+    return $price + $step_rate;
+};
 
 function show_error(&$content, $error) {
     $content = include_template('error.php', ['error' => $error]);
 };
-
-
-?>

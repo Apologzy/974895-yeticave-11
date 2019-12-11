@@ -1,8 +1,8 @@
 <?php
+session_start();
 $user_name = 'Кирилл'; // укажите здесь ваше имя
 date_default_timezone_get("Europe/Moskow");
 $dt_now = date_create('now');
-$dt_future = date_create('2019-12-7');
 $active_cat = 'nav__item--current';
 
 $con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
@@ -19,8 +19,6 @@ $content_id = $_GET['content_id'] ?? null;
 $page_number = $_GET['pages'] ?? 1;
 $forward_slide = $page_number + 1;
 $back_slide = $page_number - 1;
-$dt_diff = date_diff($dt_now, $dt_future);
-$dt_lost = get_lost_time($dt_diff);
 
 $lists_of_cat = sql_get_categories($con);
 $total_lots = sql_get_total_count_lots($con, $content_id);
@@ -30,6 +28,11 @@ $lots_view = sql_get_lots_for_curr_pages($con, $content_id, $page_number, $offse
 
 
 foreach ($lots_view as &$lot) {
+    $dt_future = (isset($lot['dt_end']) ? date_create($lot['dt_end']) : null );
+    $lost_time_trade = get_lost_time($dt_now, $dt_future);
+    $lot['lost_time'] = $lost_time_trade;
+    $time_finisher = timer_finisher($dt_now, $dt_future);
+    $lot['timer'] = $time_finisher;
     $lots_and_rates = sql_get_rates($con, $lot['id']);
     $rates_amount = count($lots_and_rates);
     $rates_result = get_rates_amount($rates_amount);

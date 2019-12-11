@@ -143,7 +143,7 @@ SQL;
         exit('Ошибка mySQL: ' . $error);
     }
     else {
-        return mysqli_fetch_all($sql_rate_result, MYSQLI_ASSOC);
+        return mysqli_fetch_assoc($sql_rate_result);
     }
 };
 
@@ -248,4 +248,3 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
     return $stmt;
 };
-?>
