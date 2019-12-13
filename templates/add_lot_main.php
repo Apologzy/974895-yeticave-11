@@ -23,7 +23,7 @@
                 <select id="category" name="category">
                     <option></option>
                     <?php foreach ($lists_of_cat as $category): ?>
-                    <option value="<?= $category['id']; ?>"><?= $category['cat_name']; ?></option>
+                    <option value="<?= $category['id']; ?>" <?= $category['id']==($_POST['category'] ?? null) ? 'selected' : ''; ?> ><?= $category['cat_name']; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <?php if(isset($errors)) : ?>

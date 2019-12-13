@@ -234,11 +234,20 @@ function validateLength($value, $min, $max) {
 //валидация даты
 function validate_date($value, $min, $max) {
     if ($value) {
+        $date_now = date_create('now');
+        $date_now->modify('+1 day');
+        $date_end = date_create($value);
         $len = strlen($value);
         if ($len < $min or $len > $max) {
             return "Значение должно быть от $min до $max символов";
         } elseif(!strtotime($value)) {
             return "Указан неверный формат даты";
+        } else {
+            if ($date_now > $date_end) {
+                return 'Указана неварная дата окончания торгов';
+            } else {
+                return null;
+            }
         }
     }
 
