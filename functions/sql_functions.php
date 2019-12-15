@@ -21,7 +21,7 @@ function sql_get_lots($connect) {
     SELECT * FROM lots
 SQL;
     $sql_lots_result = mysqli_query($connect, $lots);
-    if(!$sql_cut_result) {
+    if(!$sql_lots_result) {
         $error = mysqli_error($connect);
         exit('Ошибка mySQL: ' . $error);
     }
@@ -74,6 +74,30 @@ SQL;
 };
 
 
+//функция для показа ставок текущего пользователя с учетом пагинации
+function sql_get_lots_and_rates_for_curr_user ($connect, $user_id, $page, $offset_and_limits) {
+    mysqli_set_charset($connect, 'utf8');
+    $offset = $offset_and_limits[$page]['offset'];
+    $limit = $offset_and_limits[$page]['limit'];
+    $whereCondition = ($user_id ?  "WHERE r.user_id = $user_id" : '');
+    $lots = <<<SQL
+    SELECT  l.id, l.user_winner_id, l.cat_id, l.dt_create, c.cat_name, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.user_id, r.lot_id, r.dt_create AS rate_dt_create, r.rate_price FROM lots l
+    JOIN  rates r ON r.lot_id = l.id
+    JOIN  categories c ON c.id = l.cat_id
+    $whereCondition
+    ORDER BY rate_dt_create DESC
+    LIMIT $limit OFFSET $offset
+SQL;
+    $sql_lots_result = mysqli_query($connect, $lots);
+    if(!$sql_lots_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
+    }
+};
+
 
 function sql_get_lots_for_curr_pages ($connect, $get_id, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
@@ -97,6 +121,67 @@ SQL;
     }
 };
 
+
+function sql_existence_rates ($connect, $lot_id, $user_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($user_id ?  "WHERE r.user_id = $user_id AND l.id = $lot_id" : '');
+    $lots = <<<SQL
+    SELECT  l.id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.id AS rate_id, r.user_id, r.lot_id, r.dt_create AS rate_dt_create, r.rate_price FROM lots l
+    JOIN  rates r ON r.lot_id = l.id
+    $whereCondition
+    ORDER BY l.dt_create DESC
+    LIMIT 1
+SQL;
+    $sql_lots_result = mysqli_query($connect, $lots);
+    if(!$sql_lots_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
+    }
+};
+
+// функция просматривает все лоты и ставки, если время торгов закончилось, выявляет победителя и записывает его в бд.
+function sql_lot_winner ($connect, $time_now) {
+    mysqli_set_charset($connect, 'utf8');
+    $all_lots = sql_get_lots($connect);
+    foreach ($all_lots as $lot) {
+        $date_end = date_create($lot['dt_end']);
+        if ($time_now > $date_end) {
+         $id = $lot['id'];
+         $whereCondition = ($id ?  "WHERE l.id = $id" : '');
+         $lot_and_rate = <<<SQL
+         SELECT  l.id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.user_id, r.lot_id, r.dt_create AS rate_dt_create, r.rate_price FROM lots l
+         JOIN  rates r ON r.lot_id = l.id
+         $whereCondition
+         ORDER BY r.rate_price DESC 
+         LIMIT 1
+SQL;
+
+        $sql_lots_result = mysqli_query($connect, $lot_and_rate);
+        if(!$sql_lots_result) {
+            $error = mysqli_error($connect);
+            exit('Ошибка mySQL: ' . $error);
+        }
+        else {
+           $lot_and_rate_arr = mysqli_fetch_assoc($sql_lots_result);
+           $lot_id = $lot_and_rate_arr['id'];
+           $user_id = $lot_and_rate_arr['user_id'];
+           $lot_update = <<<SQL
+           UPDATE lots
+           SET user_winner_id = "$user_id"
+           WHERE id = "$lot_id"
+SQL;
+           $sql_upd_res = mysqli_query($connect, $lot_update);
+           if(!$sql_upd_res) {
+               $error = mysqli_error($connect);
+               exit('Ошибка mySQL: ' . $error);
+           }
+        }
+      };
+    };
+}
 
 function sql_get_lots_view($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
@@ -133,6 +218,25 @@ SQL;
     }
     else {
         return mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
+    }
+};
+
+// функция для показа всех лотов на которые были сделаны ставки конкретным пользователем
+function sql_get_all_rates_of_curr_user ($connect, $user_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($user_id ?  "WHERE r.user_id = $user_id" : '');
+    $rate = <<<SQL
+    SELECT  l.id, l.user_winner_id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.user_id, r.lot_id, r.dt_create AS rate_dt_create, r.rate_price FROM lots l
+    JOIN  rates r ON r.lot_id = l.id
+    $whereCondition
+SQL;
+    $sql_rate_result = mysqli_query($connect, $rate);
+    if(!$sql_rate_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_all($sql_rate_result, MYSQLI_ASSOC);
     }
 };
 

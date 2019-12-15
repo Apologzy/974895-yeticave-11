@@ -2,22 +2,28 @@
 
 
 function get_lost_time ($time_now, $date_end) {
+    $date_now = $time_now;
+    $dt_end = $date_end;
     $time = date_diff($time_now, $date_end);
     $month_con = date_interval_format($time, '%m');
     $day_con = date_interval_format($time, '%a');
     $hours_con = date_interval_format($time, '%h');
     $min_con = date_interval_format($time, '%i');
-    if ($month_con >= 1) {
-        return get_noun_plural_form($month_con, 'месяц', 'месяца', 'месяцев');
-    } else if ($day_con >= 7) {
-        $week_con = floor($day_con / 7);
-        return get_noun_plural_form($week_con, 'неделя', 'недели', 'недель');
-    } else if ($day_con > 0 and $day_con < 7 ) {
-        return get_noun_plural_form($day_con, 'день', 'дня', 'дней');
-    } else if ($hours_con >= 1) {
-        return get_noun_plural_form($hours_con, 'час', 'часа', 'часов');
-    } else {
-        return get_noun_plural_form($min_con, 'минута', 'минуты', 'минут');
+    if ($date_now > $dt_end) {
+        return 'trade off';
+     } else {
+        if ($month_con >= 1) {
+            return get_noun_plural_form($month_con, 'месяц', 'месяца', 'месяцев');
+        } else if ($day_con >= 7) {
+            $week_con = floor($day_con / 7);
+            return get_noun_plural_form($week_con, 'неделя', 'недели', 'недель');
+        } else if ($day_con > 0 and $day_con < 7 ) {
+            return get_noun_plural_form($day_con, 'день', 'дня', 'дней');
+        } else if ($hours_con >= 1) {
+            return get_noun_plural_form($hours_con, 'час', 'часа', 'часов');
+        } else {
+            return get_noun_plural_form($min_con, 'минута', 'минуты', 'минут');
+        }
     }
 };
 
@@ -41,7 +47,7 @@ function timer_finisher ($time_now, $date_end) {
     }
 };
 
-
+// функция расчета и склонения времени ставки, относительно текущего времени
 function get_history_time_ago ($time_now, $rate_tame) {
     $time = date_diff($time_now, $rate_tame);
     $month_con = date_interval_format($time, '%m');
@@ -62,7 +68,7 @@ function get_history_time_ago ($time_now, $rate_tame) {
     }
 };
 
-
+// функция склонения ставок
 function get_rates_amount ($rates) {
     if ($rates == 1) {
        return $rates . ' ставка';
@@ -70,7 +76,7 @@ function get_rates_amount ($rates) {
        return $rates . ' ставки';
     };
 };
-
+// функция для рассчета общего количества страниц
 function get_total_pages($lots) {
     $lots_count = count($lots);
     if($lots_count == 0) {
@@ -80,6 +86,7 @@ function get_total_pages($lots) {
     }
 };
 
+// функция расчета смещения и лимита
 function get_offset_and_limits ($page_size, $total_pages) {
    $limit = $page_size;
    $offset = 0;
@@ -259,10 +266,12 @@ function getPostVal($name) {
     return filter_input(INPUT_POST, $name);
 };
 
+//функция расчета минимальной ставки
 function calc_min_rate ($price, $step_rate) {
     return $price + $step_rate;
 };
 
+// функция валидации добавления ставки
 function validate_rate ($value, $connect, $get_id) {
     if (strlen($value) > 0) {
         mysqli_set_charset($connect, 'utf8');

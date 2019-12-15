@@ -72,14 +72,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $page_content = include_template ('lot_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
         'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result,
         'errors' => $errors]);
-        $layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
+        $layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Лот',
         'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
         exit($layout_content);
 
     } else {
-        $sql = 'INSERT INTO rates (dt_create, user_id, lot_id, rate_price) VALUES (NOW(),?,?,?)';
-        $stmt = db_get_prepare_stmt($con, $sql, [$_SESSION['user']['id'], $lot_id, $form['rate']]);
-        $res = mysqli_stmt_execute($stmt);
+        $lot_rate = sql_existence_rates($con, $lot_id, $_SESSION['user']['id']);
+        $rate_id = $lot_rate[0]['rate_id'] ?? null;
+        $user_id = $_SESSION['user']['id'];
+        $rate = $form['rate'];
+        $format_date_now = date_format($dt_now, 'Y-m-d H:i:s');
+        if ($lot_rate) {
+           $update = <<<SQL
+            UPDATE rates
+            SET dt_create = "$format_date_now",
+            user_id = "$user_id",
+            lot_id = "$lot_id",
+            rate_price = "$rate"
+            WHERE ID = "$rate_id"
+SQL;
+            $res = mysqli_query($con, $update);
+            if(!$res) {
+                $error = mysqli_error($con);
+                exit('Ошибка mySQL: ' . $error);
+            }
+        } else {
+            $sql = 'INSERT INTO rates (dt_create, user_id, lot_id, rate_price) VALUES (NOW(),?,?,?)';
+            $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $lot_id, $form['rate']]);
+            $res = mysqli_stmt_execute($stmt);
+        }
 
     };
     if ($res && empty($errors)) {
@@ -92,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $page_content = include_template ('lot_main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view, 'con' => $con,
     'content_id' => $content_id, 'active_cat' => $active_cat, 'lot_id' => $lot_id, 'rates_amount' => $rates_amount, 'rates_result' => $rates_result]);
 
-$layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: all lots',
+$layout_content = include_template ('lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Лот',
     'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
 
 print ($layout_content);
