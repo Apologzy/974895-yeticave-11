@@ -91,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $layout_content = include_template ('add_lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Добавить лот',
         'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
         exit($layout_content);
-        // header("Location: add.php?content_id=1");
     } else {
             $lot_name = $form_con_arr['lot-name'];
             $lot_step = $form_con_arr['lot-step'];
@@ -101,26 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $lot_description = $form_con_arr['description'];
             $lot_cat_id = $form_con_arr['category'];
             $user_id = $_SESSION['user']['id'];
-            $sql_add_lot = <<<SQL
-            INSERT INTO lots
-            set user_create_id = $user_id,
-            cat_id = '$lot_cat_id',
-            title = '$lot_name',
-            img = '$lot_img',
-            content = '$lot_description',
-            start_price = '$lot_rate',
-            dt_end = '$lot_date',
-            step_rate = '$lot_step'
-SQL;
-            $add_post_result = mysqli_query($con, $sql_add_lot);
-            if (!$add_post_result) {
-                $error = mysqli_error($con);
-                exit('Ошибка mySQL: ' . $error);
-
-
-            } else {
-                $add_lot_id = mysqli_insert_id($con);
-
+            $sql = 'INSERT INTO lots (user_create_id, cat_id, title, img, content, start_price, dt_end, step_rate) VALUES (?,?,?,?,?,?,?,?)';
+            $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $lot_cat_id, $lot_name, $lot_img, $lot_description, $lot_rate, $lot_date, $lot_step]);
+            $res = mysqli_stmt_execute($stmt);
+            if ($res && empty($errors)) {
+                 $add_lot_id = mysqli_insert_id($con);
                 header("Location: lot.php?lot_id=" . $add_lot_id);
             };
 

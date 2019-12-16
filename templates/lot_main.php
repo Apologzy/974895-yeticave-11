@@ -35,14 +35,18 @@
                         Мин. ставка <span><?=$lot['min_price']; ?></span>
                     </div>
                 </div>
+                <?php if (isset($_SESSION['user'])) : ?>
                 <form class="lot-item__form"  method="post" autocomplete="off">
-                    <p class="lot-item__form-item form__item form__item--invalid">
+                    <p class="lot-item__form-item form__item <?= isset($errors) ? 'form__item--invalid' : '' ?>">
                         <label for="cost">Ваша ставка</label>
                         <input id="cost" type="text" name="rate" placeholder="<?=$lot['min_price']; ?>">
-                        <span class="form__error">Введите наименование лота</span>
+                        <?php if(isset($errors)) : ?>
+                        <span class="form__error">Введите корректную сумму ставки</span>
+                        <?php endif; ?>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>
                 </form>
+                <?php endif; ?>
             </div>
             <div class="history">
                 <h3>История ставок (<span><?=$rates_amount ? $rates_result : 'ставок нет' ?></span>)</h3>

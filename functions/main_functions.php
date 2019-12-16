@@ -1,6 +1,6 @@
 <?php
 
-
+//функция для форматирования времени, которое осталось до окончания торгов
 function get_lost_time ($time_now, $date_end) {
     $date_now = $time_now;
     $dt_end = $date_end;
@@ -27,6 +27,7 @@ function get_lost_time ($time_now, $date_end) {
     }
 };
 
+//функция для определения класса, который нужен для подсветки таймера, если времени до конца торгов осталось меньше часа.
 function timer_finisher ($time_now, $date_end) {
     $time = date_diff($time_now, $date_end);
     $month_con = date_interval_format($time, '%m');
@@ -72,9 +73,11 @@ function get_history_time_ago ($time_now, $rate_tame) {
 function get_rates_amount ($rates) {
     if ($rates == 1) {
        return $rates . ' ставка';
-    } else {
+    } elseif ($rates > 1 and $rates <= 4) {
        return $rates . ' ставки';
-    };
+    } else {
+        return $rates . ' ставок';
+    }
 };
 // функция для рассчета общего количества страниц
 function get_total_pages($lots) {
@@ -98,7 +101,7 @@ function get_offset_and_limits ($page_size, $total_pages) {
    return $offset_and_limits;
 };
 
-
+// функция склонения даты
 function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
     $number = (int)$number;
@@ -124,72 +127,7 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
 };
 
 
-function generate_random_date($index)
-{
-    $deltas = [['minutes' => 59], ['hours' => 23], ['days' => 6], ['weeks' => 4], ['months' => 11]];
-    $dcnt = count($deltas);
-
-    if ($index < 0) {
-        $index = 0;
-    }
-
-    if ($index >= $dcnt) {
-        $index = $dcnt - 1;
-    }
-
-    $delta = $deltas[$index];
-    $timeval = rand(1, current($delta));
-    $timename = key($delta);
-
-    $ts = strtotime("$timeval $timename ago");
-    $dt = date('Y-m-d H:i:s', $ts);
-
-    return $dt;
-};
-
-
-function getContent($text, $max_length) {
-
-    $str_length = mb_strlen($text);
-    if ($str_length > $max_length) {
-        $words = explode(' ', $text);
-        $new_words = [];
-        $divide = '...';
-
-        foreach ($words as $word) {
-            $new_words[] = $word;
-            $new_str_lng = mb_strlen(implode(' ', $new_words));
-            if ($new_str_lng > $max_length) {
-                array_pop($new_words);
-                return implode(' ', $new_words).$divide;
-            } elseif ($new_str_lng == $max_length) {
-                return implode(' ', $new_words).$divide;
-            };
-        };
-    }
-    else {
-        return $text;
-    }
-};
-
-
-function posts_filtered ($content) {
-    foreach ($content as $key => & $x_cont) {
-        $x_cont['title'] = strip_tags($x_cont['title']);
-        $x_cont['login'] = strip_tags($x_cont['login']);
-        $x_cont['content'] = strip_tags($x_cont['content']);
-        $x_cont['login'] = strip_tags($x_cont['login']);
-        $x_cont['avatar'] = strip_tags($x_cont['avatar']);
-        $x_cont['autor'] = strip_tags($x_cont['autor']);
-        $x_cont['img'] = strip_tags($x_cont['img']);
-        $x_cont['link'] = strip_tags($x_cont['link']);
-        $x_cont['video'] = strip_tags($x_cont['video']);
-        $x_cont['avatar'] = strip_tags($x_cont['avatar']);
-    };
-    return $content;
-};
-
-
+//функция шаблонизатор
 function include_template ($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -305,6 +243,7 @@ SQL;
     return null;
 };
 
+//функция показа ошибок
 function show_error(&$content, $error) {
     $content = include_template('error.php', ['error' => $error]);
 };

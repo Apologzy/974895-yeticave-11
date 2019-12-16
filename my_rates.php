@@ -1,11 +1,8 @@
 <?php
 session_start();
-$user_name = 'Кирилл'; // укажите здесь ваше имя
 date_default_timezone_get("Europe/Moskow");
 $dt_now = date_create('now');
 $active_cat = 'nav__item--current';
-$win_class = 'rates__item--win';
-$trade_end_class = 'rates__item--end';
 
 $con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
 if ($con == false) {
@@ -43,6 +40,8 @@ foreach ($lots_view as &$lot) {
     $rates_result = get_rates_amount($rates_amount);
     $current_price = sql_get_rate_price_all_lots($con, $lot['id']);
     $lot['price'] = $current_price;
+    $user_contact = get_user_contacts($con, $lot['user_create_id']);
+    $lot['user_contact'] = $user_contact;
 };
 
 

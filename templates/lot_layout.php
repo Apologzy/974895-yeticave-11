@@ -36,6 +36,7 @@
                     <div class="user-menu__logged">
                         <p><?= $_SESSION['user']['login']; ?></p>
                         <a href="/logout.php">Выйти</a>
+                        <a href="/my_rates.php">Мои ставки</a>
                     </div>
                     <?php endif; ?>
                 </ul>

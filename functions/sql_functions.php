@@ -1,5 +1,5 @@
 <?php
-
+//функция показа категорий
 function sql_get_categories($connect) {
     mysqli_set_charset($connect, 'utf8');
     $categories = <<<SQL
@@ -15,6 +15,7 @@ SQL;
     }
 };
 
+//функция показа всех лотов
 function sql_get_lots($connect) {
     mysqli_set_charset($connect, 'utf8');
     $lots = <<<SQL
@@ -32,7 +33,7 @@ SQL;
 
 
 
-
+// функци для показа всех лотов по определенному контент id
 function sql_get_total_count_lots($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE c.id = $get_id" : '');
@@ -51,7 +52,7 @@ SQL;
     }
 };
 
-
+//функция для показа найденных лотов, с учетом запроса поиска, страницы, смещения и лимита.
 function sql_get_found_lots_from_search ($connect, $search, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
     $offset = $offset_and_limits[$page]['offset'];
@@ -81,7 +82,7 @@ function sql_get_lots_and_rates_for_curr_user ($connect, $user_id, $page, $offse
     $limit = $offset_and_limits[$page]['limit'];
     $whereCondition = ($user_id ?  "WHERE r.user_id = $user_id" : '');
     $lots = <<<SQL
-    SELECT  l.id, l.user_winner_id, l.cat_id, l.dt_create, c.cat_name, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.user_id, r.lot_id, r.dt_create AS rate_dt_create, r.rate_price FROM lots l
+    SELECT  l.id, l.user_create_id, l.user_winner_id, l.cat_id, l.dt_create, c.cat_name, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.user_id, r.lot_id, r.dt_create AS rate_dt_create, r.rate_price FROM lots l
     JOIN  rates r ON r.lot_id = l.id
     JOIN  categories c ON c.id = l.cat_id
     $whereCondition
@@ -98,7 +99,25 @@ SQL;
     }
 };
 
+// функция для показа контактов пользователя
+function get_user_contacts($connect, $user_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($user_id ?  "WHERE id = $user_id" : '');
+    $contacts = <<<SQL
+    SELECT contacts FROM users
+    $whereCondition
+SQL;
+    $sql_contacts_result = mysqli_query($connect, $contacts);
+    if(!$sql_contacts_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_assoc($sql_contacts_result);
+    }
+};
 
+//функция для показа лотов определенной страницы, включающая смещения и лимит для показа
 function sql_get_lots_for_curr_pages ($connect, $get_id, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
     $offset = $offset_and_limits[$page]['offset'];
@@ -121,7 +140,7 @@ SQL;
     }
 };
 
-
+//функция для проверки существования ставки на лот, конеретного пользователя.
 function sql_existence_rates ($connect, $lot_id, $user_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($user_id ?  "WHERE r.user_id = $user_id AND l.id = $lot_id" : '');
@@ -183,6 +202,7 @@ SQL;
     };
 }
 
+// функция для показа лотов
 function sql_get_lots_view($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE c.id = $get_id" : '');
@@ -203,6 +223,7 @@ SQL;
     }
 };
 
+//функция для показа конкретного лота
 function sql_get_lot ($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE l.id = $get_id" : '');
@@ -240,6 +261,8 @@ SQL;
     }
 };
 
+
+//функия для показа истории ставок
 function sql_get_rates_history($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
@@ -258,6 +281,7 @@ SQL;
     }
 };
 
+//функия для определения текущей цены
 function sql_get_current_price ($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
@@ -296,7 +320,7 @@ SQL;
     }
 };
 
-
+//функция для получения определенных ставок
 function sql_get_rates($connect, $id) {
     mysqli_set_charset($connect, 'utf8');
     $were_con = $id;
@@ -315,6 +339,8 @@ SQL;
     }
 };
 
+
+//функция для получения цены на лот
 function sql_get_rate_price_all_lots($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
@@ -333,7 +359,7 @@ SQL;
         return mysqli_fetch_assoc($sql_lots_result);
     }
 };
-
+//функция подготовленного выражения запроса
 function db_get_prepare_stmt($link, $sql, $data = []) {
     $stmt = mysqli_prepare($link, $sql);
 

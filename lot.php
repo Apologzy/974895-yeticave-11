@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rate = $form['rate'];
         $format_date_now = date_format($dt_now, 'Y-m-d H:i:s');
         if ($lot_rate) {
-           $update = <<<SQL
+            $update = <<<SQL
             UPDATE rates
             SET dt_create = "$format_date_now",
             user_id = "$user_id",
@@ -97,8 +97,8 @@ SQL;
                 exit('Ошибка mySQL: ' . $error);
             }
         } else {
-            $sql = 'INSERT INTO rates (dt_create, user_id, lot_id, rate_price) VALUES (NOW(),?,?,?)';
-            $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $lot_id, $form['rate']]);
+            $sql = 'INSERT INTO rates (dt_create, user_id, lot_id, rate_price) VALUES (?,?,?,?)';
+            $stmt = db_get_prepare_stmt($con, $sql, [$format_date_now, $user_id, $lot_id, $form['rate']]);
             $res = mysqli_stmt_execute($stmt);
         }
 

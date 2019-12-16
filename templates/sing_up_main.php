@@ -8,7 +8,6 @@
     </ul>
     </ul>
 </nav>
-<?php var_dump($errors) ?>
 <form class="form container <?= isset($errors) ? 'form--invalid' : '' ?>" method="post" autocomplete="off" enctype="multipart/form-data"> <!-- form
     --invalid -->
     <h2>Регистрация нового аккаунта</h2>
