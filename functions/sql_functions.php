@@ -99,6 +99,27 @@ SQL;
     }
 };
 
+function sql_get__winner_info($connect, $user_id, $lot_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($user_id ?  "WHERE u.id = $user_id AND l.id = $lot_id" : '');
+    $lots = <<<SQL
+    SELECT  l.id, l.user_create_id, u.email, u.login, u.contacts, l.user_winner_id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, r.user_id, r.lot_id, r.dt_create AS rate_dt_create, r.rate_price FROM lots l
+    JOIN users u ON u.id = l.user_winner_id
+    JOIN  rates r ON r.lot_id = l.id
+    $whereCondition
+    ORDER BY r.rate_price DESC 
+    LIMIT 1
+SQL;
+    $sql_lots_result = mysqli_query($connect, $lots);
+    if(!$sql_lots_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_assoc($sql_lots_result);
+    }
+};
+
 // функция для показа контактов пользователя
 function get_user_contacts($connect, $user_id) {
     mysqli_set_charset($connect, 'utf8');

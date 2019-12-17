@@ -11,7 +11,9 @@ if ($con == false) {
 
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
-sql_lot_winner($con, $dt_now);
+
+$winner = sql_lot_winner($con, $dt_now);
+
 $all_rates_of_curr_user = sql_get_all_rates_of_curr_user($con,$_SESSION['user']['id']);
 
 $content_id = $_GET['content_id'] ?? null;

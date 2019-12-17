@@ -47,7 +47,7 @@
                 </label>
             </div>
             <?php if(isset($errors)) : ?>
-            <span class="form__error">Добавьте изображение</span>
+            <span class="form__error"><?= $errors['file']=='Загрузите картинку в нужном формате' ? $errors['file'] : 'Добавьте изображение' ?></span>
             <?php endif; ?>
         </div>
         <div class="form__container-three">
@@ -69,10 +69,12 @@
                 <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
                 <input class="form__input-date" id="lot-date" type="text" name="lot-date" value="<?= getPostVal('lot-date'); ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
                 <?php if(isset($errors)) : ?>
-                <span class="form__error">Введите дату окончания торгов</span>
+                <span class="form__error"><?= $errors['lot-date']=='Указана неварная дата окончания торгов' ? $errors['lot-date'] : 'Введите дату окончания торгов' ?></span>
                 <?php endif; ?>
             </div>
         </div>
+        <?php if (isset($errors)): ?>
         <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
+        <?php endif; ?>
         <button type="submit" class="button">Добавить лот</button>
     </form>

@@ -52,7 +52,6 @@ $lists_of_cat = sql_get_categories($con);
     };
 
     if (count($errors)) {
-        var_dump($errors);
         $page_content = include_template('search_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con, 'content_id' => $content_id, 'active_cat' => $active_cat,
             'errors' => $errors, 'form_con_arr' => $form_con_arr, 'search' => $search]);
         $layout_content = include_template ('search_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Поиск',
