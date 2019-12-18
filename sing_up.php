@@ -78,10 +78,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 };
 
-
-
-$page_content = include_template ('sing_up_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con,
+if (isset($errors)) {
+    $page_content = include_template ('sing_up_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con,
     'content_id' => $content_id, 'active_cat' => $active_cat, 'errors' => $errors]);
+} else {
+    $page_content = include_template ('sing_up_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con,
+        'content_id' => $content_id, 'active_cat' => $active_cat]);
+};
+
+
 
 $layout_content = include_template ('sing_up_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Регистрация',
     'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
