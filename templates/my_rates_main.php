@@ -13,7 +13,7 @@
     <h2>Мои ставки</h2>
     <table class="rates__list">
         <?php foreach ($lots_view as $lot): ?>
-        <tr class="rates__item <?= $lot['lost_time']=='trade off' ? 'rates__item--end' : '' ?> <?= $_SESSION['user']['id']==$lot['user_winner_id'] ? 'rates__item--win' : '' ?>">
+        <tr class="rates__item <?= ($lot['lost_time']=='trade off' && $_SESSION['user']['id']!==$lot['user_winner_id']) ? 'rates__item--end' : '' ?> <?= $_SESSION['user']['id']==$lot['user_winner_id'] ? 'rates__item--win' : '' ?>">
             <td class="rates__info">
                 <div class="rates__img">
                     <img src="../<?=$lot['img']; ?>" width="54" height="40" alt="<?=$lot['title']; ?>">

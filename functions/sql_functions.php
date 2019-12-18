@@ -15,6 +15,56 @@ SQL;
     }
 };
 
+// функция проверяет наличие контент id
+function sql_isset_content_id ($connect, $content_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($content_id ?  "WHERE id = $content_id" : '');
+    $lots = <<<SQL
+    SELECT * FROM categories
+    $whereCondition
+SQL;
+    $sql_lots_result = mysqli_query($connect, $lots);
+    if(!$sql_lots_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        $array = mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
+        if (count($array) > 0) {
+            return $content_id;
+        }
+        else {
+            return 'error';
+        }
+
+    }
+};
+
+//проверка существования лот ID
+function sql_isset_lot_id ($connect, $lot_id) {
+    mysqli_set_charset($connect, 'utf8');
+    $whereCondition = ($lot_id ?  "WHERE id = $lot_id" : '');
+    $lots = <<<SQL
+    SELECT * FROM lots
+    $whereCondition
+SQL;
+    $sql_lots_result = mysqli_query($connect, $lots);
+    if(!$sql_lots_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        $array = mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
+        if (count($array) > 0) {
+            return $lot_id;
+        }
+        else {
+            return 'error';
+        }
+
+    }
+};
+
 //функция показа всех лотов
 function sql_get_lots($connect) {
     mysqli_set_charset($connect, 'utf8');
@@ -55,8 +105,8 @@ SQL;
 //функция для показа найденных лотов, с учетом запроса поиска, страницы, смещения и лимита.
 function sql_get_found_lots_from_search ($connect, $search, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
-    $offset = $offset_and_limits[$page]['offset'];
-    $limit = $offset_and_limits[$page]['limit'];
+    $offset = $offset_and_limits[$page]['offset'] ?? null;
+    $limit = $offset_and_limits[$page]['limit'] ?? null;
     $lots = <<<SQL
     SELECT l.id, c.id AS cat_id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, c.cat_name, c.symb_code FROM lots l 
     JOIN categories c ON c.id = l.cat_id
@@ -67,7 +117,7 @@ SQL;
     $sql_lots_result = mysqli_query($connect, $lots);
     if(!$sql_lots_result) {
         $error = mysqli_error($connect);
-        exit('Ошибка mySQL: ' . $error);
+        return 'error';
     }
     else {
         return mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
@@ -141,8 +191,8 @@ SQL;
 //функция для показа лотов определенной страницы, включающая смещения и лимит для показа
 function sql_get_lots_for_curr_pages ($connect, $get_id, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
-    $offset = $offset_and_limits[$page]['offset'];
-    $limit = $offset_and_limits[$page]['limit'];
+    $offset = $offset_and_limits[$page]['offset'] ?? null;
+    $limit = $offset_and_limits[$page]['limit'] ?? null;
     $whereCondition = ($get_id ?  "WHERE c.id = $get_id" : '');
     $lots = <<<SQL
     SELECT l.id, c.id AS cat_id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, c.cat_name, c.symb_code FROM lots l 
@@ -154,7 +204,7 @@ SQL;
     $sql_lots_result = mysqli_query($connect, $lots);
     if(!$sql_lots_result) {
         $error = mysqli_error($connect);
-        exit('Ошибка mySQL: ' . $error);
+        return 'error';
     }
     else {
         return mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
@@ -324,22 +374,7 @@ SQL;
 
 
 
-function sql_get_lots_rate($connect) {
-    mysqli_set_charset($connect, 'utf8');
-    $lots = <<<SQL
-    SELECT r.user_id, r.lot_id, r.rate_price, l.id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, c.cat_name, c.symb_code FROM lots l 
-    JOIN categories c ON c.id = l.cat_id
-    JOIN rates r ON l.id = r.lot_id
-SQL;
-    $sql_lots_result = mysqli_query($connect, $lots);
-    if(!$sql_lots_result) {
-        $error = mysqli_error($connect);
-        exit('Ошибка mySQL: ' . $error);
-    }
-    else {
-        return mysqli_fetch_all($sql_lots_result, MYSQLI_ASSOC);
-    }
-};
+
 
 //функция для получения определенных ставок
 function sql_get_rates($connect, $id) {

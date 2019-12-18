@@ -26,7 +26,7 @@ $lists_of_cat = sql_get_categories($con);
 
 
 
-    $search = $_GET['search'] ?? '';
+    $search = htmlspecialchars($_GET['search']) ?? '';
     $req_fields = ['search'];
     $errors = [];
     $rules = [
@@ -67,7 +67,7 @@ $lists_of_cat = sql_get_categories($con);
            $stmt = db_get_prepare_stmt($con, $sql, [$search]);
            $gg = mysqli_stmt_execute($stmt);
            $result = mysqli_stmt_get_result($stmt);
-           $page_number = $_GET['pages'] ?? 1;
+           $page_number =isset($_GET['pages']) ? intval($_GET['pages']) : 1;
            $forward_slide = $page_number + 1;
            $back_slide = $page_number - 1;
 
@@ -77,6 +77,10 @@ $lists_of_cat = sql_get_categories($con);
            $offset_and_limits = get_offset_and_limits(9,$total_pages);
 
            $found_lots = sql_get_found_lots_from_search($con, $search, $page_number, $offset_and_limits);
+           if ($found_lots == 'error') {
+               http_response_code(404);
+               die('Страница не найдена');
+           };
            if (!$lots_search_res) {
                $errors['q'] = 'не дали результатов';
                $page_content = include_template('search_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con, 'content_id' => $content_id, 'active_cat' => $active_cat,

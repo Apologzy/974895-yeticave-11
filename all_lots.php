@@ -15,8 +15,14 @@ require ('functions/sql_functions.php');
 
 
 
-$content_id = $_GET['content_id'] ?? null;
-$page_number = $_GET['pages'] ?? 1;
+
+$content_id = isset($_GET['content_id']) ? intval($_GET['content_id']) : null;
+$content_id = sql_isset_content_id($con, $content_id);
+if ($content_id == 'error') {
+    http_response_code(404);
+    die('Страница не найдена');
+};
+$page_number =isset($_GET['pages']) ? intval($_GET['pages']) : 1;
 $forward_slide = $page_number + 1;
 $back_slide = $page_number - 1;
 
@@ -25,7 +31,10 @@ $total_lots = sql_get_total_count_lots($con, $content_id);
 $total_pages = get_total_pages($total_lots);
 $offset_and_limits = get_offset_and_limits(9,$total_pages);
 $lots_view = sql_get_lots_for_curr_pages($con, $content_id, $page_number, $offset_and_limits);
-
+if ($lots_view == 'error') {
+    http_response_code(404);
+    die('Страница не найдена');
+};
 
 foreach ($lots_view as &$lot) {
     $dt_future = (isset($lot['dt_end']) ? date_create($lot['dt_end']) : null );

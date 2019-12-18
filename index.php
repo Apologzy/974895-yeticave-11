@@ -11,7 +11,7 @@ if ($con == false) {
 
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
-require ('templates/get_winner.php');
+//require ('templates/get_winner.php');
 
 $content_id = $_GET['content_id'] ?? null;
 

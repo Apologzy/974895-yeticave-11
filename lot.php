@@ -15,9 +15,14 @@ require ('functions/sql_functions.php');
 
 
 
-$content_id = $_GET['content_id'] ?? null;
-$lot_id = $_GET['lot_id'] ?? null;
+$content_id = isset($_GET['content_id']) ? intval($_GET['content_id']) : null;
 
+$lot_id = isset($_GET['lot_id']) ? intval($_GET['lot_id']) : null;
+$lot_id = sql_isset_lot_id($con, $lot_id);
+if ($lot_id == 'error') {
+    http_response_code(404);
+    die('Страница не найдена');
+};
 $lists_of_cat = sql_get_categories($con);
 $lots_view = sql_get_lot($con, $lot_id);
 
@@ -43,6 +48,7 @@ foreach ($lots_view as &$lot) {
     $cur_price = (isset($lot['price']['rate_price']) ? $lot['price']['rate_price'] : $lot['start_price']);
     $min_price = calc_min_rate($cur_price, $lot['step_rate']);
     $lot['min_price'] = $min_price;
+
 };
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -80,25 +86,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $lot_rate = sql_existence_rates($con, $lot_id, $_SESSION['user']['id']);
         $rate_id = $lot_rate[0]['rate_id'] ?? null;
         $user_id = $_SESSION['user']['id'];
-        $rate = $form['rate'];
+        $rate = strip_tags($form['rate']);
         $format_date_now = date_format($dt_now, 'Y-m-d H:i:s');
         if ($lot_rate) {
+            $safe_rate = mysqli_real_escape_string($con, $rate);
             $update = <<<SQL
             UPDATE rates
             SET dt_create = "$format_date_now",
             user_id = "$user_id",
             lot_id = "$lot_id",
-            rate_price = "$rate"
+            rate_price = "$safe_rate"
             WHERE ID = "$rate_id"
 SQL;
             $res = mysqli_query($con, $update);
             if(!$res) {
                 $error = mysqli_error($con);
-                exit('Ошибка mySQL: ' . $error);
+                http_response_code(404);
+                die('Попытка SQL инъекции');
             }
         } else {
             $sql = 'INSERT INTO rates (dt_create, user_id, lot_id, rate_price) VALUES (?,?,?,?)';
-            $stmt = db_get_prepare_stmt($con, $sql, [$format_date_now, $user_id, $lot_id, $form['rate']]);
+            $stmt = db_get_prepare_stmt($con, $sql, [$format_date_now, $user_id, $lot_id, $rate]);
             $res = mysqli_stmt_execute($stmt);
         }
 

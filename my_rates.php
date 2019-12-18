@@ -44,6 +44,7 @@ foreach ($lots_view as &$lot) {
     $lot['price'] = $current_price;
     $user_contact = get_user_contacts($con, $lot['user_create_id']);
     $lot['user_contact'] = $user_contact;
+
 };
 
 

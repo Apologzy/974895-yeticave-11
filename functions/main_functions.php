@@ -157,12 +157,7 @@ function validateEmail($value, $min, $max) {
 };
 
 
-// проверка заполненности поля
-function validateFilled($name) {
-    if (empty($_POST[$name])) {
-        return "Это поле должно быть заполнено";
-    }
-};
+
 
 // проверка длины поля
 function validateLength($value, $min, $max) {
@@ -243,7 +238,21 @@ SQL;
     return null;
 };
 
-//функция показа ошибок
-function show_error(&$content, $error) {
-    $content = include_template('error.php', ['error' => $error]);
+// функция для фильтрации тегов из формы
+function xss_filter ($lot_name, $lot_step, $lot_rate, $lot_date, $lot_description, $lot_cat_id ) {
+    $lot_name = strip_tags($lot_name) ?? null;
+    $lot_step = strip_tags($lot_step) ?? null;
+    $lot_rate = strip_tags($lot_rate) ?? null;
+    $lot_date = strip_tags($lot_date) ?? null;
+    $lot_description = strip_tags($lot_description) ?? null;
+    $lot_cat_id = strip_tags($lot_cat_id) ?? null;
+    $non_tags_arr = [
+        'lot-name' => $lot_name,
+        'lot-step' => $lot_step,
+        'lot-rate' => $lot_rate,
+        'lot-date' => $lot_date,
+        'description' => $lot_description,
+        'category' => $lot_cat_id];
+    return $non_tags_arr;
 };
+

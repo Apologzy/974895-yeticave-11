@@ -35,7 +35,7 @@
                         Мин. ставка <span><?=$lot['min_price']; ?></span>
                     </div>
                 </div>
-                <?php if (isset($_SESSION['user'])) : ?>
+                <?php if (isset($_SESSION['user']) && $lot['lost_time']!=='trade off') : ?>
                 <form class="lot-item__form"  method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item <?= isset($errors) ? 'form__item--invalid' : '' ?>">
                         <label for="cost">Ваша ставка</label>

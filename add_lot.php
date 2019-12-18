@@ -84,22 +84,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $errors['file'] = 'Фаил не загружен';
     };
+    $non_tags_fields = xss_filter ($form_con_arr['lot-name'], $form_con_arr['lot-step'], $form_con_arr['lot-rate'], $form_con_arr['lot-date'], $form_con_arr['description'], $form_con_arr['category']);
+    foreach ($non_tags_fields as $key => $field) {
+        if ($field == '' || null) {
+            $errors[$key] = "Поле $key надо заполнить";
+        } else {
 
+        }
+    };
     if (count($errors)) {
+        var_dump($errors);
         $page_content = include_template('add_lot_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con, 'content_id' => $content_id, 'active_cat' => $active_cat,
         'errors' => $errors, 'form_con_arr' => $form_con_arr]);
         $layout_content = include_template ('add_lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Добавить лот',
         'lists_of_cat' => $lists_of_cat, 'content_id' => $content_id, 'active_cat' => $active_cat ]);
         exit($layout_content);
     } else {
-            $lot_name = $form_con_arr['lot-name'];
-            $lot_step = $form_con_arr['lot-step'];
+            $lot_name = $non_tags_fields['lot-name'];
+            $lot_step = $non_tags_fields['lot-step'];
             $lot_img = 'uploads/' . $form_con_arr['path'];
-            $lot_rate = $form_con_arr['lot-rate'];
-            $lot_date = $form_con_arr['lot-date'];
-            $lot_description = $form_con_arr['description'];
-            $lot_cat_id = $form_con_arr['category'];
+            $lot_rate = $non_tags_fields['lot-rate'];
+            $lot_date = $non_tags_fields['lot-date'];
+            $lot_description = $non_tags_fields['description'];
+            $lot_cat_id = $non_tags_fields['category'];
             $user_id = $_SESSION['user']['id'];
+
             $sql = 'INSERT INTO lots (user_create_id, cat_id, title, img, content, start_price, dt_end, step_rate) VALUES (?,?,?,?,?,?,?,?)';
             $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $lot_cat_id, $lot_name, $lot_img, $lot_description, $lot_rate, $lot_date, $lot_step]);
             $res = mysqli_stmt_execute($stmt);
