@@ -157,6 +157,39 @@ function validateEmail($value, $min, $max) {
 };
 
 
+//функция валидации шага ставки в форме добавления лота
+function validate_step_rate($value, $min, $max) {
+    if ($value) {
+        $len = strlen($value);
+        if ($len < $min or $len > $max) {
+            return "Значение должно быть от $min до $max символов";
+        } elseif (!is_int($value)) {
+            return 'Указан неверный шаг ставки';
+        } elseif ($value < 0) {
+            return 'Указан неверный шаг ставки';
+        }
+
+    }
+
+    return null;
+};
+
+// функция валидации цены лота в форме добавления лота
+function validate_lot_rate($value, $min, $max) {
+    if ($value) {
+        $len = strlen($value);
+        if ($len < $min or $len > $max) {
+            return "Значение должно быть от $min до $max символов";
+        } elseif (!is_int($value)) {
+            return 'Указана неверая цена лота';
+        } elseif ($value <= 0) {
+            return 'Указана неверная цена лота';
+        }
+
+    }
+
+    return null;
+};
 
 
 // проверка длины поля
