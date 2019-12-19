@@ -7,8 +7,9 @@ $active_cat = 'nav__item--current';
 
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
+$config = include ('config.php');
 
-$con = sql_get_connect('127.0.0.1', 'root', '', 'yeticave');
+$con = sql_get_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database_name']);
 
 $content_id = isset($_GET['content_id']) ? intval($_GET['content_id']) : null;
 

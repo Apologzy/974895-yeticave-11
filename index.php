@@ -5,7 +5,9 @@ $dt_now = date_create('now');
 
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
-$con = sql_get_connect('127.0.0.1', 'root', '', 'yeticave');
+
+$config = include ('config.php');
+$con = sql_get_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database_name']);
 //блок get_winner.ph закомментирован чтобы обеспечить быстродействие главной страницы, чтобы отправить почтовую рассылку победителям
 // нужно раскомментировать блок подключения этого сценария.
 //require ('templates/get_winner.php');

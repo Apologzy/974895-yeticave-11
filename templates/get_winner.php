@@ -1,9 +1,9 @@
 <?php
 require ('vendor/autoload.php');
 
-$transport = new Swift_SmtpTransport("phpdemo.ru", 25);
-$transport->setUsername("keks@phpdemo.ru");
-$transport->setPassword("htmlacademy");
+$transport = new Swift_SmtpTransport($config['smtp']['host'], $config['smtp']['port']);
+$transport->setUsername($config['smtp']['user']);
+$transport->setPassword($config['smtp']['password']);
 
 $mailer = new Swift_Mailer($transport);
 $winner = sql_lot_winner($con, $dt_now);
