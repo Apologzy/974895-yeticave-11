@@ -14,7 +14,12 @@ $con = sql_get_connect($config['db']['host'], $config['db']['user'], $config['db
 
 
 
-$content_id = $_GET['content_id'] ?? null;
+$content_id = isset($_GET['content_id']) ? intval($_GET['content_id']) : null;
+$content_id = sql_isset_content_id($con, $content_id);
+if ($content_id == 'error') {
+    http_response_code(404);
+    die('Страница не найдена');
+};
 
 
 $lists_of_cat = sql_get_categories($con);

@@ -15,8 +15,14 @@ $winner = sql_lot_winner($con, $dt_now);
 
 $all_rates_of_curr_user = sql_get_all_rates_of_curr_user($con,$_SESSION['user']['id']);
 
-$content_id = $_GET['content_id'] ?? null;
-$page_number = $_GET['pages'] ?? 1;
+$content_id = isset($_GET['content_id']) ? intval($_GET['content_id']) : null;
+$content_id = sql_isset_content_id($con, $content_id);
+if ($content_id == 'error') {
+    http_response_code(404);
+    die('Страница не найдена');
+};
+
+$page_number =isset($_GET['pages']) ? intval($_GET['pages']) : 1;
 $forward_slide = $page_number + 1;
 $back_slide = $page_number - 1;
 
