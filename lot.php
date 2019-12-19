@@ -38,10 +38,11 @@ foreach ($lots_view as &$lot) {
     $lots_and_rates = sql_get_rates($con, $lot['id']);
     $rates_amount = count($lots_and_rates);
     $rates_result = get_rates_amount($rates_amount);
+    $lot['rate_count'] = $rates_result;
     $current_price = sql_get_current_price($con, $lot['id']);
     $lot['price'] = $current_price;
     $cur_price = (isset($lot['price']['rate_price']) ? $lot['price']['rate_price'] : $lot['start_price']);
-    $min_price = calc_min_rate($cur_price, $lot['step_rate']);
+    $min_price = calc_min_rate($cur_price, $lot['step_rate'], $rates_amount);
     $lot['min_price'] = $min_price;
 };
 

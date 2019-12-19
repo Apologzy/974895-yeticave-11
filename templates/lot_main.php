@@ -26,7 +26,7 @@
                 </div>
                 <div class="lot-item__cost-state">
                     <div class="lot-item__rate">
-                        <span class="lot-item__amount"><?=isset($rates_amount) ? $rates_result : 'Текущая цена'  ?></span>
+                        <span class="lot-item__amount"><?=isset($lot['rate_count']) ? $lot['rate_count'] : 'Стартовая цена' ?></span>
 
                         <span class="lot-item__cost"><?= $lot['price']['rate_price'] ? $lot['price']['rate_price'] : $lot['start_price'] ?></span>
 
@@ -49,7 +49,7 @@
                 <?php endif; ?>
             </div>
             <div class="history">
-                <h3>История ставок (<span><?=$rates_amount ? $rates_result : 'ставок нет' ?></span>)</h3>
+                <h3>История ставок (<span><?=isset($lot['rate_count']) && $lot['rate_count']!=='Стартовая цена' ? $lot['rate_count'] : 'Ставок нет' ?></span>)</h3>
                 <table class="history__list">
                     <?php foreach ($lot['history'] as $history): ?>
                     <tr class="history__item">

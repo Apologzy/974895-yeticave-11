@@ -3,7 +3,6 @@ session_start();
 date_default_timezone_get("Europe/Moskow");
 $dt_now = date_create('now');
 
-
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
 $con = sql_get_connect('127.0.0.1', 'root', '', 'yeticave');
@@ -25,6 +24,10 @@ foreach ($lots_view as &$lot) {
     $lot['lost_time'] = $lost_time_trade;
     $time_finisher = timer_finisher($dt_now, $dt_future);
     $lot['timer'] = $time_finisher;
+    $lots_and_rates = sql_get_rates($con, $lot['id']);
+    $rates_amount = count($lots_and_rates);
+    $rates_result = get_rates_amount($rates_amount);
+    $lot['rate_count'] = $rates_result;
 };
 
 $page_content = include_template ('main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view]);

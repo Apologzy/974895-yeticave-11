@@ -86,6 +86,7 @@ if (count($errors)) {
            $lots_and_rates = sql_get_rates($con, $lot['id']);
            $rates_amount = count($lots_and_rates);
            $rates_result = get_rates_amount($rates_amount);
+           $lot['rate_count'] = $rates_result;
            $current_price = sql_get_rate_price_all_lots($con, $lot['id']);
            $lot['price'] = $current_price;
        };

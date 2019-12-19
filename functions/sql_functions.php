@@ -405,7 +405,6 @@ SQL;
 
 
 
-
 //функция для получения определенных ставок
 function sql_get_rates($connect, $id) {
     mysqli_set_charset($connect, 'utf8');

@@ -76,7 +76,7 @@ function get_rates_amount ($rates) {
     } elseif ($rates > 1 and $rates <= 4) {
        return $rates . ' ставки';
     } elseif ($rates == 0) {
-        return 'Текущая цена';
+        return 'Стартовая цена';
     }else {
         return $rates . ' ставок';
     }
@@ -235,8 +235,13 @@ function getPostVal($name) {
 };
 
 //функция расчета минимальной ставки
-function calc_min_rate ($price, $step_rate) {
-    return $price + $step_rate;
+function calc_min_rate ($price, $step_rate, $rate_amount) {
+    if ($rate_amount == 'Стартовая цена') {
+        return $price;
+    } else {
+        return $price + $step_rate;
+    }
+
 };
 
 // функция валидации добавления ставки
@@ -260,7 +265,10 @@ SQL;
                 $current_price = sql_get_current_price($connect, $lot['id']);
                 $lot['price'] = $current_price;
                 $cur_price = (isset($lot['price']['rate_price']) ? $lot['price']['rate_price'] : $lot['start_price']);
-                $min_price = calc_min_rate($cur_price, $lot['step_rate']);
+                $lots_and_rates = sql_get_rates($connect, $lot['id']);
+                $rates_amount = count($lots_and_rates);
+                $rates_result = get_rates_amount($rates_amount);
+                $min_price = calc_min_rate($cur_price, $lot['step_rate'], $rates_result);
                 $lot['min_price'] = $min_price;
                 if ($lot['min_price'] > $value) {
                     return 'Ставка слишком мала';

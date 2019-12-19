@@ -23,7 +23,7 @@
                         <h3 class="lot__title"><a class="text-link" href="/lot.php?lot_id=<?= $lot['id']; ?>"><?=$lot['title']; ?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
-                                <span class="lot__amount"><?=$rates_amount ? $rates_result : 'Текущая цена'  ?></span>
+                                <span class="lot__amount"><?=isset($lot['rate_count']) ? $lot['rate_count'] : 'Стартовая цена' ?></span>
                                 <span class="lot__cost"><?= $lot['price']['rate_price'] ? $lot['price']['rate_price'] : $lot['start_price'] ?><b class="rub">р</b></span>
 
                             </div>
