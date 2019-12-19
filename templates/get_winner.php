@@ -16,8 +16,6 @@ foreach ($all_lots as $lot) {
     }
 };
 
-
-
 foreach ($users_winner_info_arr as $user) {
     $recipients = [];
     $recipients[$user['email']] = $user['login'];

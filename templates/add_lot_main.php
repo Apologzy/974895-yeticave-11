@@ -15,7 +15,7 @@
                 <label for="lot-name">Наименование <sup>*</sup></label>
                 <input id="lot-name" type="text" name="lot-name" value="<?= getPostVal('lot-name'); ?>" placeholder="Введите наименование лота">
                 <?php if(isset($errors)) : ?>
-                <span class="form__error">Введите наименование лота</span>
+                <span class="form__error">Введите наименование лота, оно должно содержать минимум 4 символа</span>
                 <?php endif; ?>
             </div>
             <div class="form__item <?= isset($errors['category']) ? 'form__item--invalid' : '' ?> ">
@@ -35,7 +35,7 @@
             <label for="message">Описание <sup>*</sup></label>
             <textarea id="message" name="description"  placeholder="Напишите описание лота"><?= getPostVal('description'); ?></textarea>
             <?php if(isset($errors)) : ?>
-            <span class="form__error">Введите описание лота</span>
+            <span class="form__error">Введите описание лота, описание должно содержать минимум 10 символов</span>
             <?php endif; ?>
         </div>
         <div class="form__item <?= isset($errors['file']) ? 'form__item--invalid' : '' ?> form__item--file">
@@ -55,14 +55,14 @@
                 <label for="lot-rate">Начальная цена <sup>*</sup></label>
                 <input id="lot-rate" type="text" name="lot-rate" value="<?= getPostVal('lot-rate'); ?>" placeholder="0">
                 <?php if(isset($errors)) : ?>
-                <span class="form__error"><?= $errors['lot-rate']=='Указана неверая цена лота' ? 'Введите корректную цену лота' : 'Введите начальную цену' ?></span>
+                <span class="form__error"><?= $errors['lot-rate']=='Указана неверая цена лота' ? 'Введите корректную цену лота, цена не может превышить 9999999р' : 'Введите начальную цену, но не более 9999999' ?></span>
                 <?php endif; ?>
             </div>
             <div class="form__item <?= isset($errors['lot-step']) ? 'form__item--invalid' : '' ?> form__item--small">
                 <label for="lot-step">Шаг ставки <sup>*</sup></label>
                 <input id="lot-step" type="text" name="lot-step" value="<?= getPostVal('lot-step'); ?>" placeholder="0">
                 <?php if(isset($errors)) : ?>
-                <span class="form__error"><?= $errors['lot-step']=='Указан неверный шаг ставки' ? 'Введите корректный шаг ставки' : 'Введите шаг ставки' ?></span>
+                <span class="form__error"><?= $errors['lot-step']=='Указан неверный шаг ставки' ? 'Введите корректный шаг ставки, шаг ставки не может превышать 9999р' : 'Введите шаг ставки, шаг ставки не может превышать 9999р' ?></span>
                 <?php endif; ?>
             </div>
             <div class="form__item <?= isset($errors['lot-date']) ? 'form__item--invalid' : '' ?> ">

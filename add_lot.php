@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             return validate_lot_rate($value, 1, 7);
         },
         'lot-step' => function($value) {
-            return validate_step_rate($value, 1, 5);
+            return validate_step_rate($value, 1, 4);
         },
         'category' => function($value) {
             return validateLength($value, 1, 200);
@@ -86,12 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($non_tags_fields as $key => $field) {
         if ($field == '' || null) {
             $errors[$key] = "Поле $key надо заполнить";
-        } else {
-
-        }
+        };
     };
     if (count($errors)) {
-        var_dump($errors);
         $page_content = include_template('add_lot_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con, 'content_id' => $content_id, 'active_cat' => $active_cat,
         'errors' => $errors, 'form_con_arr' => $form_con_arr]);
         $layout_content = include_template ('add_lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Добавить лот',

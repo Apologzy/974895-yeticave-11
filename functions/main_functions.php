@@ -161,13 +161,14 @@ function validateEmail($value, $min, $max) {
 
 //функция валидации шага ставки в форме добавления лота
 function validate_step_rate($value, $min, $max) {
+    $value = intval($value);
     if ($value) {
         $len = strlen($value);
         if ($len < $min or $len > $max) {
             return "Значение должно быть от $min до $max символов";
         } elseif (!is_int($value)) {
             return 'Указан неверный шаг ставки';
-        } elseif ($value < 0) {
+        } elseif ($value <= 0) {
             return 'Указан неверный шаг ставки';
         }
 
@@ -178,6 +179,7 @@ function validate_step_rate($value, $min, $max) {
 
 // функция валидации цены лота в форме добавления лота
 function validate_lot_rate($value, $min, $max) {
+    $value = intval($value);
     if ($value) {
         $len = strlen($value);
         if ($len < $min or $len > $max) {
