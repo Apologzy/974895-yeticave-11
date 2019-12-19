@@ -4,13 +4,9 @@ date_default_timezone_get("Europe/Moskow");
 $dt_now = date_create('now');
 $active_cat = 'nav__item--current';
 
-$con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
-if ($con == false) {
-    exit('Ошибка подключения ' . mysqli_connect_error());
-};
-
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
+$con = sql_get_connect('127.0.0.1', 'root', '', 'yeticave');
 
 $content_id = $_GET['content_id'] ?? null;
 

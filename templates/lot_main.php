@@ -6,7 +6,7 @@
             </li>
         <?php endforeach; ?>
     </ul>
-    </ul>
+
 </nav>
 <section class="lot-item container">
     <?php foreach ($lots_view as $lot): ?>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="lot-item__cost-state">
                     <div class="lot-item__rate">
-                        <span class="lot-item__amount"><?=$rates_amount ? $rates_result : 'Текущая цена'  ?></span>
+                        <span class="lot-item__amount"><?=isset($rates_amount) ? $rates_result : 'Текущая цена'  ?></span>
 
                         <span class="lot-item__cost"><?= $lot['price']['rate_price'] ? $lot['price']['rate_price'] : $lot['start_price'] ?></span>
 
@@ -35,7 +35,7 @@
                         Мин. ставка <span><?=$lot['min_price']; ?></span>
                     </div>
                 </div>
-                <?php if (isset($_SESSION['user']) && $lot['lost_time']!=='trade off') : ?>
+                <?php if (isset($_SESSION['user']) && $lot['lost_time']!=='trade off' && $_SESSION['user']['id']!==$lot['user_create_id']) : ?>
                 <form class="lot-item__form"  method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item <?= isset($errors) ? 'form__item--invalid' : '' ?>">
                         <label for="cost">Ваша ставка</label>

@@ -3,14 +3,11 @@ session_start();
 $dt_now = date_create('now');
 $dt_future = date_create('2019-12-7');
 $active_cat = 'nav__item--current';
-$con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
-if ($con == false) {
-    exit('Ошибка подключения ' . mysqli_connect_error());
-};
 
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
 
+$con = sql_get_connect('127.0.0.1', 'root', '', 'yeticave');
 $content_id = $_GET['content_id'] ?? null;
 
 $lists_of_cat = sql_get_categories($con);

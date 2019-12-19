@@ -1,4 +1,15 @@
 <?php
+
+//функция подключения к базе данных
+function sql_get_connect ($host, $user, $password, $database_name) {
+    $con = mysqli_connect($host, $user, $password, $database_name);
+    if ($con == false) {
+        exit('Ошибка подключения ' . mysqli_connect_error());
+    };
+    return $con;
+};
+
+
 //функция показа категорий
 function sql_get_categories($connect) {
     mysqli_set_charset($connect, 'utf8');
@@ -12,6 +23,24 @@ SQL;
     }
     else {
        return mysqli_fetch_all($sql_cut_result, MYSQLI_ASSOC);
+    }
+};
+
+//функция для показа название категории исходя из ее id
+function sql_get_categories_name($connect, $cat_id) {
+    $whereCondition = ($cat_id ?  "WHERE id = $cat_id" : '');
+    mysqli_set_charset($connect, 'utf8');
+    $categories = <<<SQL
+    SELECT cat_name FROM categories 
+    $whereCondition
+SQL;
+    $sql_cut_result = mysqli_query($connect, $categories);
+    if(!$sql_cut_result) {
+        $error = mysqli_error($connect);
+        exit('Ошибка mySQL: ' . $error);
+    }
+    else {
+        return mysqli_fetch_assoc($sql_cut_result);
     }
 };
 
@@ -149,6 +178,7 @@ SQL;
     }
 };
 
+// функци для показа разной информации победителя торгов
 function sql_get__winner_info($connect, $user_id, $lot_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($user_id ?  "WHERE u.id = $user_id AND l.id = $lot_id" : '');
@@ -299,7 +329,7 @@ function sql_get_lot ($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE l.id = $get_id" : '');
     $lots = <<<SQL
-    SELECT l.id, c.id AS cat_id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, c.cat_name, c.symb_code FROM lots l 
+    SELECT l.id, l.user_create_id, c.id AS cat_id, l.cat_id, l.dt_create, l.title, l.img, l.content, l.start_price, l.dt_end, l.step_rate, c.cat_name, c.symb_code FROM lots l 
     JOIN categories c ON c.id = l.cat_id
     $whereCondition
 SQL;

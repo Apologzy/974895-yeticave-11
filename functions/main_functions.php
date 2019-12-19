@@ -75,7 +75,9 @@ function get_rates_amount ($rates) {
        return $rates . ' ставка';
     } elseif ($rates > 1 and $rates <= 4) {
        return $rates . ' ставки';
-    } else {
+    } elseif ($rates == 0) {
+        return 'Текущая цена';
+    }else {
         return $rates . ' ставок';
     }
 };

@@ -5,15 +5,10 @@ $dt_now = date_create('now');
 
 $active_cat = 'nav__item--current';
 
-$con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
-if ($con == false) {
-    exit('Ошибка подключения ' . mysqli_connect_error());
-};
-
 require ('functions/main_functions.php');
 require ('functions/sql_functions.php');
 
-
+$con = sql_get_connect('127.0.0.1', 'root', '', 'yeticave');
 
 $content_id = isset($_GET['content_id']) ? intval($_GET['content_id']) : null;
 
@@ -48,7 +43,6 @@ foreach ($lots_view as &$lot) {
     $cur_price = (isset($lot['price']['rate_price']) ? $lot['price']['rate_price'] : $lot['start_price']);
     $min_price = calc_min_rate($cur_price, $lot['step_rate']);
     $lot['min_price'] = $min_price;
-
 };
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
