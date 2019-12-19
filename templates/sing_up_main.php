@@ -6,7 +6,7 @@
             </li>
         <?php endforeach; ?>
     </ul>
-    </ul>
+
 </nav>
 <form class="form container <?= isset($errors) ? 'form--invalid' : '' ?>" method="post" autocomplete="off" enctype="multipart/form-data"> <!-- form
     --invalid -->
@@ -15,21 +15,21 @@
         <label for="email">E-mail <sup>*</sup></label>
         <input id="email" type="text" name="email" value="<?= getPostVal('email'); ?>" placeholder="Введите e-mail">
         <?php if(isset($errors)) : ?>
-        <span class="form__error">Введите email</span>
+        <span class="form__error">Введите корректный email</span>
         <?php endif; ?>
     </div>
     <div class="form__item <?= isset($errors['password']) ? 'form__item--invalid' : '' ?> ">
         <label for="password">Пароль <sup>*</sup></label>
         <input id="password" type="password" name="password" value="<?= getPostVal('password'); ?>" placeholder="Введите пароль">
         <?php if(isset($errors)) : ?>
-        <span class="form__error">Введите пароль</span>
+        <span class="form__error">Введите корректный пароль</span>
         <?php endif; ?>
     </div>
     <div class="form__item <?= isset($errors['name']) ? 'form__item--invalid' : '' ?>">
         <label for="name">Имя <sup>*</sup></label>
         <input id="name" type="text" name="name" value="<?= getPostVal('name'); ?>" placeholder="Введите имя">
         <?php if(isset($errors)) : ?>
-        <span class="form__error">Введите логин</span>
+        <span class="form__error">Введите корректное имя пользователя</span>
         <?php endif; ?>
     </div>
     <div class="form__item <?= isset($errors['contacts']) ? 'form__item--invalid' : '' ?>">

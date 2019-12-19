@@ -47,11 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors[$key] = "Поле $key надо заполнить";
         }
     };
-
+    $user_name = strip_tags($form['name']);
+    if ($user_name=='') {
+        $errors['name'] = 'Введите корректное имя пользователя';
+    };
+    $user_password = strip_tags($form['password']);
+    if ($user_password=='') {
+        $errors['password'] = 'Введите корректный пароль';
+    };
     $errors = array_filter($errors);
 
     if (empty($errors)) {
-
         $email = mysqli_real_escape_string($con, $form['email']);
         $sql = "SELECT id FROM users WHERE email = '$email'";
         $res_email = mysqli_query($con, $sql);
@@ -64,8 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors['name'] = 'Пользователь с этим именем уже зарегистрирован';
         } else {
             $password = password_hash($form['password'], PASSWORD_DEFAULT);
+            $user_contacts = htmlspecialchars($form['contacts']);
             $sql = 'INSERT INTO users (dt_create, email, login, pass, contacts) VALUES (NOW(), ?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($con, $sql, [$form['email'], $form['name'], $password, $form['contacts']]);
+            $stmt = db_get_prepare_stmt($con, $sql, [$form['email'], $form['name'], $password, $user_contacts]);
             $res = mysqli_stmt_execute($stmt);
         };
 

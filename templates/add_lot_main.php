@@ -6,7 +6,7 @@
             </li>
         <?php endforeach; ?>
     </ul>
-    </ul>
+
 </nav>
 <form class="form form--add-lot container <?= isset($errors) ? 'form--invalid' : '' ?>"  method="post" enctype="multipart/form-data"> <!-- form--invalid -->
         <h2>Добавление лота</h2>
@@ -55,14 +55,14 @@
                 <label for="lot-rate">Начальная цена <sup>*</sup></label>
                 <input id="lot-rate" type="text" name="lot-rate" value="<?= getPostVal('lot-rate'); ?>" placeholder="0">
                 <?php if(isset($errors)) : ?>
-                <span class="form__error">Введите начальную цену</span>
+                <span class="form__error"><?= $errors['lot-rate']=='Указана неверая цена лота' ? 'Введите корректную цену лота' : 'Введите начальную цену' ?></span>
                 <?php endif; ?>
             </div>
             <div class="form__item <?= isset($errors['lot-step']) ? 'form__item--invalid' : '' ?> form__item--small">
                 <label for="lot-step">Шаг ставки <sup>*</sup></label>
                 <input id="lot-step" type="text" name="lot-step" value="<?= getPostVal('lot-step'); ?>" placeholder="0">
                 <?php if(isset($errors)) : ?>
-                <span class="form__error">Введите шаг ставки</span>
+                <span class="form__error"><?= $errors['lot-step']=='Указан неверный шаг ставки' ? 'Введите корректный шаг ставки' : 'Введите шаг ставки' ?></span>
                 <?php endif; ?>
             </div>
             <div class="form__item <?= isset($errors['lot-date']) ? 'form__item--invalid' : '' ?> ">

@@ -18,7 +18,7 @@ $lists_of_cat = sql_get_categories($con);
 
 
 $req_fields = ['lot-name', 'lot-rate', 'category', 'lot-date', 'lot-step', 'description'];
-$image_types = ['image/jpeg', '	image/svg+xml', 'image/x-icon', 'image/bmp'];
+$image_types = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/x-icon', 'image/bmp'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -93,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     };
     if (count($errors)) {
+        var_dump($errors);
         $page_content = include_template('add_lot_main.php', ['lists_of_cat' => $lists_of_cat, 'con' => $con, 'content_id' => $content_id, 'active_cat' => $active_cat,
         'errors' => $errors, 'form_con_arr' => $form_con_arr]);
         $layout_content = include_template ('add_lot_layout.php',['main_content' => $page_content, 'title' => 'Yeticave: Добавить лот',

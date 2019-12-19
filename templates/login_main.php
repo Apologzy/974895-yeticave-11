@@ -6,7 +6,7 @@
             </li>
         <?php endforeach; ?>
     </ul>
-    </ul>
+
 </nav>
 <form class="form container <?= isset($errors) ? 'form--invalid' : '' ?> "  method="post"> <!-- form--invalid -->
     <h2>Вход</h2>
@@ -14,14 +14,14 @@
         <label for="email">E-mail <sup>*</sup></label>
         <input id="email" type="text" name="email" value="<?= getPostVal('email'); ?>" placeholder="Введите e-mail">
         <?php if(isset($errors)) : ?>
-        <span class="form__error">Введите email</span>
+        <span class="form__error"><?= $errors['email']=='Такой пользователь не найден' ? 'Данный пользователь не найден' : 'Введите email' ?></span>
         <?php endif; ?>
     </div>
     <div class="form__item form__item--last <?= isset($errors['password']) ? 'form__item--invalid' : '' ?> ">
         <label for="password">Пароль <sup>*</sup></label>
         <input id="password" type="password" name="password" value="<?= getPostVal('password'); ?>" placeholder="Введите пароль">
         <?php if(isset($errors)) : ?>
-        <span class="form__error">Введите пароль</span>
+        <span class="form__error"> <?= $errors['password']=='Неверный пароль' ? $errors['password'] : 'Введите пароль' ?></span>
         <?php endif; ?>
     </div>
     <button type="submit" class="button">Войти</button>
