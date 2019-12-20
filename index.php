@@ -35,6 +35,8 @@ foreach ($lots_view as &$lot) {
     $rates_amount = count($lots_and_rates);
     $rates_result = get_rates_amount($rates_amount);
     $lot['rate_count'] = $rates_result;
+    $current_price = sql_get_rate_price_all_lots($con, $lot['id']);
+    $lot['price'] = $current_price;
 };
 
 $page_content = include_template ('main.php', ['lists_of_cat' => $lists_of_cat, 'lots_view' => $lots_view]);

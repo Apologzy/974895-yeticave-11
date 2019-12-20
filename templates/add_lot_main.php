@@ -1,10 +1,12 @@
 <nav class="nav">
     <ul class="nav__list container">
+        <?php if (isset($lists_of_cat)): ?>
         <?php foreach ($lists_of_cat as $category): ?>
-            <li class="nav__item <?= $content_id == $category['id'] ? $active_cat : '' ?>">
-                <a href="/all_lots.php?content_id=<?= $category['id']; ?>"><?= $category['cat_name']; ?></a>
-            </li>
+        <li class="nav__item <?= $content_id == $category['id'] ? $active_cat : '' ?>">
+            <a href="/all_lots.php?content_id=<?= isset($category['id']) ? $category['id'] : null  ?>"><?= isset($category['cat_name']) ? $category['cat_name'] : '' ?></a>
+        </li>
         <?php endforeach; ?>
+        <?php endif; ?>
     </ul>
 
 </nav>
@@ -22,9 +24,11 @@
                 <label for="category">Категория <sup>*</sup></label>
                 <select id="category" name="category">
                     <option></option>
+                    <?php if (isset($lists_of_cat)) : ?>
                     <?php foreach ($lists_of_cat as $category): ?>
-                    <option value="<?= $category['id']; ?>" <?= $category['id']==($_POST['category'] ?? null) ? 'selected' : ''; ?> ><?= $category['cat_name']; ?></option>
+                    <option value="<?= isset($category['id']) ? $category['id'] : null ?>" <?= $category['id']==($_POST['category'] ?? null) ? 'selected' : ''; ?> ><?= isset($category['cat_name']) ? $category['cat_name'] : '' ?></option>
                     <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
                 <?php if(isset($errors)) : ?>
                 <span class="form__error">Выберети категорию</span>

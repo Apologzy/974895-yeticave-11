@@ -1,10 +1,12 @@
 <nav class="nav">
     <ul class="nav__list container">
+        <?php if (isset($lists_of_cat)): ?>
         <?php foreach ($lists_of_cat as $category): ?>
-            <li class="nav__item <?= $content_id == $category['id'] ? $active_cat : '' ?>">
-                <a href="/all_lots.php?content_id=<?= $category['id']; ?>"><?= $category['cat_name']; ?></a>
-            </li>
+        <li class="nav__item <?= $content_id == $category['id'] ? $active_cat : '' ?>">
+            <a href="/all_lots.php?content_id=<?= isset($category['id']) ? $category['id'] : null  ?>"><?= isset($category['cat_name']) ? $category['cat_name'] : '' ?></a>
+        </li>
         <?php endforeach; ?>
+        <?php endif; ?>
     </ul>
 
 </nav>

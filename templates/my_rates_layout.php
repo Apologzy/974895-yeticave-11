@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title><?=$title; ?></title>
+    <title><?=isset($title) ? $title : 'Мои ставки' ?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
 </head>
@@ -34,7 +34,7 @@
                         </li>
                     <?php else : ?>
                         <div class="user-menu__logged">
-                            <p><?= $_SESSION['user']['login']; ?></p>
+                            <p><?= isset($_SESSION['user']['login']) ? $_SESSION['user']['login'] : null ?></p>
                             <a href="/logout.php">Выйти</a>
                             <a href="/my_rates.php">Мои ставки</a>
                         </div>
@@ -45,7 +45,7 @@
     </header>
 
     <main>
-        <?= $main_content ?>
+        <?= isset($main_content) ? $main_content : null ?>
     </main>
 
 </div>
@@ -53,11 +53,13 @@
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
+            <?php if (isset($lists_of_cat)): ?>
             <?php foreach ($lists_of_cat as $category): ?>
-                <li class="nav__item <?= $content_id == $category['id'] ? $active_cat : '' ?>">
-                    <a href="/all_lots.php?content_id=<?= $category['id']; ?>"><?= $category['cat_name']; ?></a>
-                </li>
+            <li class="nav__item <?= $content_id == $category['id'] ? $active_cat : '' ?>">
+                <a href="/all_lots.php?content_id=<?= isset($category['id']) ? $category['id'] : null  ?>"><?= isset($category['cat_name']) ? $category['cat_name'] : '' ?></a>
+            </li>
             <?php endforeach; ?>
+            <?php endif; ?>
         </ul>
     </nav>
     <div class="main-footer__bottom container">
