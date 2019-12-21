@@ -1,6 +1,16 @@
 <?php
 
-//функция подключения к базе данных
+
+/**
+ * функция подключения к базе данных
+ *
+ * @param string $host хост
+ * @param string $user имя пользователя
+ * @param string $password  пароль
+ * @param string $database_name имя базы данных
+ *
+ * @return mysqli Ресурс соединения
+ */
 function sql_get_connect ($host, $user, $password, $database_name) {
     $con = mysqli_connect($host, $user, $password, $database_name);
     if ($con == false) {
@@ -10,7 +20,14 @@ function sql_get_connect ($host, $user, $password, $database_name) {
 };
 
 
-//функция показа категорий
+
+/**
+ * функция создает двумерный массив категорий из базы данных
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ *
+ * @return array двумерный массив категориий
+ */
 function sql_get_categories($connect) {
     mysqli_set_charset($connect, 'utf8');
     $categories = <<<SQL
@@ -26,7 +43,15 @@ SQL;
     }
 };
 
-//функция для показа название категории исходя из ее id
+
+/**
+ * функция создает массив с названием категории из базы данных исходя из id категории
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $cat_id или число означающиее id категории
+ *
+ * @return array массив с именем ктегории
+ */
 function sql_get_categories_name($connect, $cat_id) {
     $whereCondition = ($cat_id ?  "WHERE id = $cat_id" : '');
     mysqli_set_charset($connect, 'utf8');
@@ -44,7 +69,15 @@ SQL;
     }
 };
 
-// функция проверяет наличие контент id
+
+/**
+ * функция проверяет наличие контент id
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param int $content_id  число означающиее id категории
+ *
+ * @return string с ошибкой, либо $content_id если он существует
+ */
 function sql_isset_content_id ($connect, $content_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($content_id ?  "WHERE id = $content_id" : '');
@@ -69,7 +102,15 @@ SQL;
     }
 };
 
-//проверка существования лот ID
+
+/**
+ * функция проверяет существование лот ID
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param int $lot_id число означающиее id лота
+ *
+ * @return string с ошибкой, либо $lot_id если он существует
+ */
 function sql_isset_lot_id ($connect, $lot_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($lot_id ?  "WHERE id = $lot_id" : '');
@@ -94,7 +135,14 @@ SQL;
     }
 };
 
-//функция показа всех лотов
+
+/**
+ * функция создает двумерный массив с лотами из базы данных
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ *
+ * @return array двумерный массив с лотами
+ */
 function sql_get_lots($connect) {
     mysqli_set_charset($connect, 'utf8');
     $lots = <<<SQL
@@ -112,7 +160,15 @@ SQL;
 
 
 
-// функци для показа всех лотов по определенному контент id
+
+/**
+ * функция создает двумерный массив лотов для определенной категории
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param int $get_id число означающиее id категории
+ *
+ * @return array двумерный массив лотов по определенной категории включая поля из таблицы категорий
+ */
 function sql_get_total_count_lots($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE c.id = $get_id" : '');
@@ -131,7 +187,17 @@ SQL;
     }
 };
 
-//функция для показа найденных лотов, с учетом запроса поиска, страницы, смещения и лимита.
+
+/**
+ * функция для показа найденных лотов, с учетом запроса поиска, страницы, смещения и лимита.
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $search строка из запроса поиска.
+ * @param string $page или число означающее номер страницы
+ * @param array $offset_and_limits двумерный массив в котором находятся значения смещения и лимита.
+ *
+ * @return array двумерный массив лотов включающий поля из таблицы категорий
+ */
 function sql_get_found_lots_from_search ($connect, $search, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
     $offset = $offset_and_limits[$page]['offset'] ?? null;
@@ -154,7 +220,17 @@ SQL;
 };
 
 
-//функция для показа ставок текущего пользователя с учетом пагинации
+
+/**
+ * функция для показа ставок текущего пользователя с учетом пагинации
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $user_id или число означающиее id пользователя.
+ * @param string $page или число означающее номер страницы
+ * @param array $offset_and_limits двумерный массив в котором находятся значения смещения и лимита.
+ *
+ * @return array двумерный массив лотов включающий поля из таблицы ставок и категорий.
+ */
 function sql_get_lots_and_rates_for_curr_user ($connect, $user_id, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
     $offset = $offset_and_limits[$page]['offset'];
@@ -178,7 +254,16 @@ SQL;
     }
 };
 
-// функци для показа разной информации победителя торгов
+
+/**
+ * функция для показа ставок текущего пользователя с учетом пагинации
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $user_id или число означающиее id пользователя.
+ * @param string $lot_id или число означающее id лота.
+ *
+ * @return array массив лотов включающий поля из таблицы пользователей и ставок.
+ */
 function sql_get__winner_info($connect, $user_id, $lot_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($user_id ?  "WHERE u.id = $user_id AND l.id = $lot_id" : '');
@@ -200,7 +285,15 @@ SQL;
     }
 };
 
-// функция для показа контактов пользователя
+
+/**
+ * функция для показа контактов пользователя
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $user_id или число означающиее id пользователя.
+ *
+ * @return array массив в котором лежат контакты определенного пользователя.
+ */
 function get_user_contacts($connect, $user_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($user_id ?  "WHERE id = $user_id" : '');
@@ -218,7 +311,17 @@ SQL;
     }
 };
 
-//функция для показа лотов определенной страницы, включающая смещения и лимит для показа
+
+/**
+ * функция для показа лотов определенной страницы, включающая значения страницы, смещения и лимита.
+ *
+ * @param $connect mysqli Ресурс имя базы данных.
+ * @param string $get_id или число означающиее id категории.
+ * @param string $page или число означающее номер страницы.
+ * @param array $offset_and_limits двумерный массив в котором находятся значения смещения и лимита.
+ *
+ * @return array двумерный массив лотов включающий поля из таблицы  категорий.
+ */
 function sql_get_lots_for_curr_pages ($connect, $get_id, $page, $offset_and_limits) {
     mysqli_set_charset($connect, 'utf8');
     $offset = $offset_and_limits[$page]['offset'] ?? null;
@@ -241,7 +344,16 @@ SQL;
     }
 };
 
-//функция для проверки существования ставки на лот, конеретного пользователя.
+
+/**
+ * функция для проверки существования ставки на лот, конеретного пользователя.
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $lot_id или число означающее id лота.
+ * @param string $user_id или число означающиее id пользователя.
+ *
+ * @return array двумерный массив лотов включающий поля из таблицы ставок.
+ */
 function sql_existence_rates ($connect, $lot_id, $user_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($user_id ?  "WHERE r.user_id = $user_id AND l.id = $lot_id" : '');
@@ -262,7 +374,15 @@ SQL;
     }
 };
 
-// функция просматривает все лоты и ставки, если время торгов закончилось, выявляет победителя и записывает его в бд.
+
+/**
+ * функция просматривает все лоты и ставки, если время торгов закончилось, выявляет победителя и записывает его в бд.
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param object $time_now Объект DataTime текущего времени.
+ *
+ * функция просто записывает id юзера в поле user_winner_id из таблины лотов, если были ошибки то сработает exit().
+ */
 function sql_lot_winner ($connect, $time_now) {
     mysqli_set_charset($connect, 'utf8');
     $all_lots = sql_get_lots($connect);
@@ -303,7 +423,15 @@ SQL;
     };
 }
 
-// функция для показа лотов
+
+/**
+ * функция для показа лотов
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param int $get_id число или строка с числом означающиее id категории
+ *
+ * @return array двумерный массив лотов по определенной категории включая поля из таблицы категорий сортированный по дате добавления лота
+ */
 function sql_get_lots_view($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE c.id = $get_id" : '');
@@ -343,7 +471,15 @@ SQL;
     }
 };
 
-// функция для показа всех лотов на которые были сделаны ставки конкретным пользователем
+
+/**
+ * функция для показа всех лотов на которые были сделаны ставки конкретным пользователем
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $user_id или число означающиее id пользователя
+ *
+ * @return array двумерный массив ставок включающий поля из таблицы пользователя
+ */
 function sql_get_all_rates_of_curr_user ($connect, $user_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($user_id ?  "WHERE r.user_id = $user_id" : '');
@@ -363,7 +499,15 @@ SQL;
 };
 
 
-//функия для показа истории ставок
+
+/**
+ * функия для показа истории ставок
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $get_id или число означающиее id лота
+ *
+ * @return array двумерный массив ставок включающий поля из таблицы пользователя
+ */
 function sql_get_rates_history($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
@@ -382,7 +526,15 @@ SQL;
     }
 };
 
-//функия для определения текущей цены
+
+/**
+ * функия для определения текущей цены
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $get_id или число означающиее id лота
+ *
+ * @return array массив ставок включающий поля из таблицы пользователя
+ */
 function sql_get_current_price ($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
@@ -405,7 +557,15 @@ SQL;
 
 
 
-//функция для получения определенных ставок
+
+/**
+ * функция получения ставок для определенного лота
+ *
+ * @param $connect mysqli Ресурс имя базы данных
+ * @param string $id или число означающиее id лота
+ *
+ * @return array двумерный массив лотов включающий поля из таблицы ставок
+ */
 function sql_get_rates($connect, $id) {
     mysqli_set_charset($connect, 'utf8');
     $were_con = $id;
@@ -425,7 +585,15 @@ SQL;
 };
 
 
-//функция для получения цены на лот
+
+/**
+ * функция для получения цены на лот.
+ *
+ * @param $connect mysqli Ресурс имя базы данных.
+ * @param string $get_id или число означающиее id лота.
+ *
+ * @return array массив с ценой для конкретного лота.
+ */
 function sql_get_rate_price_all_lots($connect, $get_id) {
     mysqli_set_charset($connect, 'utf8');
     $whereCondition = ($get_id ?  "WHERE r.lot_id = $get_id" : '');
@@ -444,7 +612,16 @@ SQL;
         return mysqli_fetch_assoc($sql_lots_result);
     }
 };
-//функция подготовленного выражения запроса
+
+/**
+ * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
+ *
+ * @param $link mysqli Ресурс соединения
+ * @param $sql string SQL запрос с плейсхолдерами вместо значений
+ * @param array $data Данные для вставки на место плейсхолдеров
+ *
+ * @return mysqli_stmt Подготовленное выражение
+ */
 function db_get_prepare_stmt($link, $sql, $data = []) {
     $stmt = mysqli_prepare($link, $sql);
 

@@ -1,6 +1,13 @@
 <?php
 
-//функция для форматирования времени, которое осталось до окончания торгов
+
+/**
+ * функция для форматирования времени, которое осталось до окончания торгов
+ * @param object $time_now Объект DataTime текущего времени.
+ * @param object $date_end Объект DataTime завершения торгов.
+ *
+ * @return string Рассчитанная форма множественнго числа
+ */
 function get_lost_time ($time_now, $date_end) {
     $date_now = $time_now;
     $dt_end = $date_end;
@@ -27,7 +34,14 @@ function get_lost_time ($time_now, $date_end) {
     }
 };
 
-//функция для определения класса, который нужен для подсветки таймера, если времени до конца торгов осталось меньше часа.
+
+/**
+ * функция для определения класса, который нужен для подсветки таймера, если времени до конца торгов осталось меньше часа.
+ * @param object $time_now Объект DataTime текущего времени.
+ * @param object $date_end Объект DataTime завершения торгов.
+ *
+ * @return string пустая строка '' или строка c названием класса 'timer--finishing'
+ */
 function timer_finisher ($time_now, $date_end) {
     $time = date_diff($time_now, $date_end);
     $month_con = date_interval_format($time, '%m');
@@ -48,7 +62,14 @@ function timer_finisher ($time_now, $date_end) {
     }
 };
 
-// функция расчета и склонения времени ставки, относительно текущего времени
+
+/**
+ * функция расчета и склонения времени ставки, относительно текущего времени
+ * @param object $time_now Объект DataTime текущего времени.
+ * @param object $rate_tame Объект DataTime времени ставки.
+ *
+ * @return string Рассчитанная форма множественнго числа
+ */
 function get_history_time_ago ($time_now, $rate_tame) {
     $time = date_diff($time_now, $rate_tame);
     $month_con = date_interval_format($time, '%m');
@@ -69,7 +90,13 @@ function get_history_time_ago ($time_now, $rate_tame) {
     }
 };
 
-// функция склонения ставок
+
+/**
+ * функция склонения ставок
+ * @param int $rates число ставок
+ *
+ * @return string Рассчитанная форма множественнго числа либо строка 'Стартовая цена'.
+ */
 function get_rates_amount ($rates) {
     if ($rates == 1) {
        return $rates . ' ставка';
@@ -81,7 +108,15 @@ function get_rates_amount ($rates) {
         return $rates . ' ставок';
     }
 };
-// функция для рассчета общего количества страниц
+
+
+
+/**
+ * функция рассчета общего количества страниц для пагинации.
+ * @param array $lots массив с лотами
+ *
+ * @return int количество страниц
+ */
 function get_total_pages($lots) {
     $lots_count = count($lots);
     if($lots_count == 0) {
@@ -91,7 +126,14 @@ function get_total_pages($lots) {
     }
 };
 
-// функция расчета смещения и лимита
+
+/**
+ * функция расчета смещения и лимита в sql запросах, для отображения нужного количества лотов на странице.
+ * @param int $page_size массив с лотами
+ * @param int $total_pages массив с лотами
+ *
+ * @return array двумерный массив включающий в себя страницу, смещение и лимит.
+ */
 function get_offset_and_limits ($page_size, $total_pages) {
    $limit = $page_size;
    $offset = 0;
@@ -103,7 +145,28 @@ function get_offset_and_limits ($page_size, $total_pages) {
    return $offset_and_limits;
 };
 
-// функция склонения даты
+/**
+ * Возвращает корректную форму множественного числа
+ * Ограничения: только для целых чисел
+ *
+ * Пример использования:
+ * $remaining_minutes = 5;
+ * echo "Я поставил таймер на {$remaining_minutes} " .
+ *     get_noun_plural_form(
+ *         $remaining_minutes,
+ *         'минута',
+ *         'минуты',
+ *         'минут'
+ *     );
+ * Результат: "Я поставил таймер на 5 минут"
+ *
+ * @param int $number Число, по которому вычисляем форму множественного числа
+ * @param string $one Форма единственного числа: яблоко, час, минута
+ * @param string $two Форма множественного числа для 2, 3, 4: яблока, часа, минуты
+ * @param string $many Форма множественного числа для остальных чисел
+ *
+ * @return string Рассчитанная форма множественнго числа
+ */
 function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
     $number = (int)$number;
@@ -129,7 +192,14 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
 };
 
 
-//функция шаблонизатор
+
+/**
+ * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
+ * @param string $name Путь к файлу шаблона относительно папки templates
+ * @param array $data Ассоциативный массив с данными для шаблона
+ *
+ * @return string Итоговый HTML
+ */
 function include_template ($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -144,7 +214,15 @@ function include_template ($name, $data) {
     return $result;
 };
 
-// валидация по полю емейл
+
+/**
+ * Функция для валидации по полю емейл
+ * @param string $value значение из формы регистрации, поля емеил.
+ * @param string $min минимальное количество символов.
+ * @param array $max максимальное количество символов.
+ *
+ * @return string с ошибкой валидации либо null если ошибок нету.
+ */
 function validateEmail($value, $min, $max) {
     if ($value) {
         $len = strlen($value);
@@ -159,7 +237,15 @@ function validateEmail($value, $min, $max) {
 };
 
 
-//функция валидации шага ставки в форме добавления лота
+
+/**
+ * функция валидации шага ставки в форме добавления лота
+ * @param string $value значение из формы добавления лота, поля шаг ставки.
+ * @param string $min минимальное количество символов.
+ * @param array $max максимальное количество символов.
+ *
+ * @return string с ошибкой валидации либо null если ошибок нету.
+ */
 function validate_step_rate($value, $min, $max) {
     $value = intval($value);
     if ($value) {
@@ -177,7 +263,15 @@ function validate_step_rate($value, $min, $max) {
     return null;
 };
 
-// функция валидации цены лота в форме добавления лота
+
+/**
+ * функция валидации цены лота в форме добавления лота
+ * @param string $value значение из формы добавления лота, поля цена лота.
+ * @param string $min минимальное количество символов.
+ * @param array $max максимальное количество символов.
+ *
+ * @return string с ошибкой валидации либо null если ошибок нету.
+ */
 function validate_lot_rate($value, $min, $max) {
     $value = intval($value);
     if ($value) {
@@ -196,7 +290,15 @@ function validate_lot_rate($value, $min, $max) {
 };
 
 
-// проверка длины поля
+
+/**
+ * функция валидации длины поля
+ * @param string $value значение из формы.
+ * @param string $min минимальное количество символов.
+ * @param array $max максимальное количество символов.
+ *
+ * @return string с ошибкой валидации либо null если ошибок нету.
+ */
 function validateLength($value, $min, $max) {
     if ($value) {
         $len = strlen($value);
@@ -208,7 +310,15 @@ function validateLength($value, $min, $max) {
     return null;
 };
 
-//валидация даты
+
+/**
+ * функция валидация даты окончания торгов
+ * @param string $value значение из формы добавления лота, поля даты завершения торгов.
+ * @param string $min минимальное количество символов.
+ * @param array $max максимальное количество символов.
+ *
+ * @return string с ошибкой валидации либо null если ошибок нету.
+ */
 function validate_date($value, $min, $max) {
     if ($value) {
         $date_now = date_create('now');
@@ -231,12 +341,25 @@ function validate_date($value, $min, $max) {
     return null;
 };
 
-//возвращает введенное пользователем значение в форму
+/**
+ * функция подставновки введенного значения от пользователя в форму.
+ * @param string $name значение которое ввел пользователь.
+ *
+ * @return string значение которое ввел пользователь.
+ */
 function getPostVal($name) {
     return filter_input(INPUT_POST, $name);
 };
 
-//функция расчета минимальной ставки
+
+/**
+ * функция для расчета минимальной ставки на лот
+ * @param string $price или число показываюшиее цену.
+ * @param string $step_rate или число показывающее шаг ставки.
+ * @param string $rate_amount или число показывающее число ставок.
+ *
+ * @return string сумма минимальной ставки.
+ */
 function calc_min_rate ($price, $step_rate, $rate_amount) {
     if ($rate_amount == 'Стартовая цена') {
         return $price;
@@ -246,7 +369,15 @@ function calc_min_rate ($price, $step_rate, $rate_amount) {
 
 };
 
-// функция валидации добавления ставки
+
+/**
+ * функция валидации добавления ставки
+ * @param string $value или число показываюшиее цену.
+ * @param $connect mysqli Ресурс соединения.
+ * @param string $get_id или число отвечающее за id лота.
+ *
+ * @return string ошибку валидации либо null если ошибок нету.
+ */
 function validate_rate ($value, $connect, $get_id) {
     if (strlen($value) > 0) {
         mysqli_set_charset($connect, 'utf8');
@@ -283,7 +414,18 @@ SQL;
     return null;
 };
 
-// функция для фильтрации тегов из формы
+
+/**
+ * функция для фильтрации данных от тегов из формы добавления лота.
+ * @param string $lot_name название лота из формы.
+ * @param string $lot_step шаг ставки из формы.
+ * @param string $lot_rate цена лота из формы.
+ * @param string $lot_date дата окончания торгов из формы.
+ * @param string $lot_description описание лота из формы.
+ * @param string $lot_cat_id id категории из формы.
+ *
+ * @return array ассоциативный очищенный от нежелательных тегов.
+ */
 function xss_filter ($lot_name, $lot_step, $lot_rate, $lot_date, $lot_description, $lot_cat_id ) {
     $lot_name = strip_tags($lot_name) ?? null;
     $lot_step = strip_tags($lot_step) ?? null;
